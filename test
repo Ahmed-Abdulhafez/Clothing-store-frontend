@@ -1,0 +1,45 @@
+src/
+├── app/
+│   ├── layout.jsx
+│   ├── page.jsx
+│   ├── globals.css
+│   ├── products/
+│   │   ├── page.jsx
+│   │   └── [id]/
+│   │       └── page.jsx
+│   ├── cart/
+│   │   └── page.jsx
+│   ├── checkout/
+│   │   └── page.jsx
+│   ├── login/
+│   │   └── page.jsx
+│   ├── register/
+│   │   └── page.jsx
+│   ├── account/
+│   │   └── page.jsx
+│   └── orders/
+│       └── page.jsx
+├── components/
+│   ├── layout/
+│   │   ├── Navbar.jsx
+│   │   ├── Footer.jsx
+│   │   └── AnnouncementBar.jsx
+│   ├── home/
+│   │   ├── Hero.jsx
+│   │   ├── CategoriesSection.jsx
+│   │   ├── FeaturedProducts.jsx
+│   │   └── OffersBanner.jsx
+│   └── products/
+│       ├── ProductCard.jsx
+│       ├── ProductGrid.jsx
+│       ├── ProductFilters.jsx
+│       └── ProductSearch.jsx
+├── context/
+│   ├── AuthContext.jsx
+│   └── CartContext.jsx
+├── services/
+│   ├── productService.js
+│   ├── categoriesService.js
+│   └── authService.js
+└── lib/
+    └── axios.js

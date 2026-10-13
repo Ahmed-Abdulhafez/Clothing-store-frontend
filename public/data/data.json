@@ -1,0 +1,51 @@
+
+{
+  "sidebarItem": [
+    {
+      "name": "Dashboard",
+      "href": "/dashboard",
+      "icon": "House"
+    },
+    {
+      "name": "Products",
+      "href": "/dashboard/products",
+      "icon": "ShoppingBag"
+    },
+    {
+      "name": "Orders",
+      "href": "/dashboard/orders",
+      "icon": "ShoppingCart"
+    },
+    {
+      "name": "Users",
+      "href": "/dashboard/users",
+      "icon": "User"
+    },
+    {
+      "name": "Sales",
+      "href": "/dashboard/sales",
+      "icon": "DollarSign"
+    },
+    {
+      "name": "Messages",
+      "href": "/dashboard/messages",
+      "icon": "Mail"
+    },
+    {
+      "name": "Notifications",
+      "href": "/dashboard/notifications",
+      "icon": "Bell"
+    },
+    {
+      "name": "Settings",
+      "href": "/dashboard/settings",
+      "icon": "Settings"
+    },
+    {
+      "name": "Information",
+      "href": "/dashboard/info",
+      "icon": "Info"
+    }
+  ]
+}
+
