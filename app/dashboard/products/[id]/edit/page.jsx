@@ -7,6 +7,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   ArrowLeft,
+  Settings,
+  GalleryHorizontal,
   ImagePlus,
   LoaderCircle,
   Package,
@@ -36,6 +38,7 @@ const INITIAL_FORM = {
   brand: "Evo",
   category: "",
   isFeatured: false,
+  showInProductSlider: false,
 };
 
 const MAX_IMAGES = 10;
@@ -64,7 +67,7 @@ function FormField({ label, htmlFor, hint, children }) {
   );
 }
 
-function SectionHeader({ icon: Icon, title, desc}) {
+function SectionHeader({ icon: Icon, title, desc }) {
   return (
     <div className="mb-5 flex items-start gap-3">
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -198,6 +201,8 @@ export default function EditProductPage() {
       brand: product.brand ?? "Evo",
       category: String(currentCategory),
       isFeatured: product.isFeatured ?? false,
+      showInProductSlider: product.showInProductSlider ?? false,
+
     });
 
     setExistingImages(Array.isArray(product.images) ? product.images : []);
@@ -367,6 +372,8 @@ export default function EditProductPage() {
     formData.append("brand", form.brand);
     formData.append("category", form.category);
     formData.append("isFeatured", String(form.isFeatured));
+    formData.append("showInProductSlider", String(form.showInProductSlider));
+
 
     // Existing images that should remain.
     formData.append(
@@ -524,7 +531,6 @@ export default function EditProductPage() {
               </button>
             </div>
           )}
-
           {/* Basic Information */}
           <section>
             <SectionHeader
@@ -568,9 +574,7 @@ export default function EditProductPage() {
               </FormField>
             </div>
           </section>
-
           <div className="border-t border-gray-700/80" />
-
           {/* Pricing and Inventory */}
           <section>
             <SectionHeader
@@ -626,9 +630,7 @@ export default function EditProductPage() {
               </FormField>
             </div>
           </section>
-
           <div className="border-t border-gray-700/80" />
-
           {/* Category */}
           <section>
             <SectionHeader
@@ -681,9 +683,7 @@ export default function EditProductPage() {
                 )}
             </FormField>
           </section>
-
           <div className="border-t border-gray-700/80" />
-
           {/* Existing Images */}
           <section>
             <SectionHeader
@@ -724,9 +724,7 @@ export default function EditProductPage() {
               </div>
             )}
           </section>
-
           <div className="border-t border-gray-700/80" />
-
           {/* New Images */}
           <section>
             <SectionHeader
@@ -828,17 +826,17 @@ export default function EditProductPage() {
               </div>
             )}
           </section>
-
           <div className="border-t border-gray-700/80" />
-
           {/* Product Settings */}
-          <section>
+
+          <section className="space-y-4">
             <SectionHeader
-              icon={Star}
-              title="Additional Settings"
-              description="Configure whether this product should be featured in your store."
+              icon={Settings}
+              title="Product Display Settings"
+              description="Control where this product appears in your store."
             />
 
+            {/* Featured Product */}
             <label
               htmlFor="isFeatured"
               className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-700 bg-[#252525] p-4 transition hover:border-emerald-500/40"
@@ -859,13 +857,48 @@ export default function EditProductPage() {
                 </p>
 
                 <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Highlight this product in your store.
+                  Highlight this product in the featured products section.
                 </p>
               </div>
 
               <Star
                 size={19}
                 className={form.isFeatured ? "text-amber-400" : "text-gray-600"}
+              />
+            </label>
+
+            {/* Product Slider */}
+            <label
+              htmlFor="showInProductSlider"
+              className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-700 bg-[#252525] p-4 transition hover:border-emerald-500/40"
+            >
+              <input
+                id="showInProductSlider"
+                type="checkbox"
+                name="showInProductSlider"
+                checked={form.showInProductSlider}
+                onChange={handleChange}
+                disabled={pending}
+                className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-600 bg-[#1e1e1e] accent-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+              />
+
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-200">
+                  Show in Product Slider
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-gray-500">
+                  Display this product in the product carousel on the homepage.
+                </p>
+              </div>
+
+              <GalleryHorizontal
+                size={19}
+                className={
+                  form.showInProductSlider
+                    ? "text-emerald-400"
+                    : "text-gray-600"
+                }
               />
             </label>
           </section>

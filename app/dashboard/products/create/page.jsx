@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -8,6 +7,7 @@ import {
   AlertCircle,
   ArrowLeft,
   Check,
+  GalleryHorizontal,
   ImagePlus,
   LoaderCircle,
   PackagePlus,
@@ -29,6 +29,7 @@ const INITIAL_FORM = {
   stock: "",
   category: "",
   isFeatured: false,
+  showInProductSlider: false,
   rating: "",
   numReviews: "",
   images: [],
@@ -37,8 +38,7 @@ const INITIAL_FORM = {
 const inputClass =
   "w-full rounded-lg border border-gray-700 bg-[#252525] px-3.5 py-3 text-sm text-gray-100 outline-none transition placeholder:text-gray-500 hover:border-gray-600 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60";
 
-const labelClass =
-  "mb-2 block text-sm font-medium text-gray-300";
+const labelClass = "mb-2 block text-sm font-medium text-gray-300";
 
 function FormField({ label, htmlFor, hint, children }) {
   return (
@@ -49,11 +49,7 @@ function FormField({ label, htmlFor, hint, children }) {
 
       {children}
 
-      {hint && (
-        <p className="mt-1.5 text-xs leading-5 text-gray-500">
-          {hint}
-        </p>
-      )}
+      {hint && <p className="mt-1.5 text-xs leading-5 text-gray-500">{hint}</p>}
     </div>
   );
 }
@@ -67,9 +63,7 @@ function SectionHeader({ icon: Icon, title, description }) {
 
       <div>
         <h2 className="font-semibold text-gray-100">{title}</h2>
-        <p className="mt-1 text-sm leading-5 text-gray-400">
-          {description}
-        </p>
+        <p className="mt-1 text-sm leading-5 text-gray-400">{description}</p>
       </div>
     </div>
   );
@@ -101,7 +95,7 @@ export default function DashboardCreateProductPage() {
         : Array.isArray(categoriesResponse?.data?.categories)
           ? categoriesResponse.data.categories
           : [];
-
+          
   const createProductMutation = useMutation({
     mutationFn: createProduct,
 
@@ -116,7 +110,7 @@ export default function DashboardCreateProductPage() {
     onError: (error) => {
       console.error(
         "Product creation error:",
-        error?.response?.data || error?.message
+        error?.response?.data || error?.message,
       );
 
       const serverErrors = error?.response?.data?.errors;
@@ -128,7 +122,7 @@ export default function DashboardCreateProductPage() {
             : typeof serverErrors === "string"
               ? serverErrors
               : "") ||
-          "An error occurred while creating the product."
+          "An error occurred while creating the product.",
       );
     },
   });
@@ -195,8 +189,7 @@ export default function DashboardCreateProductPage() {
 
     if (
       form.offerPrice !== "" &&
-      (!Number.isFinite(Number(form.offerPrice)) ||
-        Number(form.offerPrice) < 0)
+      (!Number.isFinite(Number(form.offerPrice)) || Number(form.offerPrice) < 0)
     ) {
       setErrorMessage("Please enter a valid offer price.");
       return;
@@ -299,9 +292,7 @@ export default function DashboardCreateProductPage() {
             >
               <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
 
-              <div className="flex-1 leading-6">
-                {errorMessage}
-              </div>
+              <div className="flex-1 leading-6">{errorMessage}</div>
 
               <button
                 type="button"
@@ -489,7 +480,8 @@ export default function DashboardCreateProductPage() {
                 !categoriesError &&
                 categories.length === 0 && (
                   <p className="mt-2 text-sm text-amber-400">
-                    No categories found. Create a category before adding this product.
+                    No categories found. Create a category before adding this
+                    product.
                   </p>
                 )}
             </FormField>
@@ -605,6 +597,7 @@ export default function DashboardCreateProductPage() {
               description="Configure featured status and optional review information."
             />
 
+            {/* Featured Product */}
             <label
               htmlFor="isFeatured"
               className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-700 bg-[#252525] p-4 transition hover:border-emerald-500/40"
@@ -616,7 +609,7 @@ export default function DashboardCreateProductPage() {
                 checked={form.isFeatured}
                 onChange={handleChange}
                 disabled={isSubmitting}
-                className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-600 bg-[#1e1e1e] text-emerald-500 accent-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+                className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-600 bg-[#1e1e1e] accent-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
               />
 
               <div className="flex-1">
@@ -625,15 +618,45 @@ export default function DashboardCreateProductPage() {
                 </p>
 
                 <p className="mt-1 text-xs leading-5 text-gray-500">
-                  Mark this product as featured in your store.
+                  Highlight this product in the featured products section.
                 </p>
               </div>
 
               <Star
                 size={19}
+                className={form.isFeatured ? "text-amber-400" : "text-gray-600"}
+              />
+            </label>
+            {/* Show in Product Slider */}
+            <label
+              htmlFor="showInProductSlider"
+              className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-700 bg-[#252525] p-4 transition hover:border-emerald-500/40"
+            >
+              <input
+                id="showInProductSlider"
+                type="checkbox"
+                name="showInProductSlider"
+                checked={form.showInProductSlider}
+                onChange={handleChange}
+                disabled={isSubmitting}
+                className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-600 bg-[#1e1e1e] accent-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+              />
+
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-200">
+                  Show in Product Slider
+                </p>
+
+                <p className="mt-1 text-xs leading-5 text-gray-500">
+                  Display this product in the product slider on the homepage.
+                </p>
+              </div>
+
+              <GalleryHorizontal
+                size={19}
                 className={
-                  form.isFeatured
-                    ? "text-amber-400"
+                  form.showInProductSlider
+                    ? "text-emerald-400"
                     : "text-gray-600"
                 }
               />
@@ -701,7 +724,9 @@ export default function DashboardCreateProductPage() {
 
             <button
               type="submit"
-              disabled={isSubmitting || categoriesLoading || categories.length === 0}
+              disabled={
+                isSubmitting || categoriesLoading || categories.length === 0
+              }
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1b1b1b] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (

@@ -18,3 +18,22 @@
     --foreground: #ededed;
   }
 }
+.homeSwiper {
+  --swiper-pagination-color: #4d7c0f;
+}
+
+.homeSwiper .swiper-button-next,
+.homeSwiper .swiper-button-prev {
+  color: #4d7c0f;
+  transform: scale(.5);
+
+}
+
+@media (max-width: 639px) {
+  .homeSwiper .swiper-button-next,
+  .homeSwiper .swiper-button-prev {
+    display: none;
+  }
+}
+
+

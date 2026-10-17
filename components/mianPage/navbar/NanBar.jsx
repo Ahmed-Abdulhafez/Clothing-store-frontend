@@ -18,7 +18,7 @@ import { useAuth } from "@/context/AuthContext";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Products", href: "/product" },
+  { label: "Products", href: "/products" },
 ];
 
 const Navbar = () => {
@@ -41,8 +41,8 @@ const Navbar = () => {
   const linkClass = (href) =>
     `text-sm font-medium transition-colors duration-200 ${
       pathname === href
-        ? "text-indigo-600"
-        : "text-gray-600 hover:text-indigo-600"
+        ? "text-lime-600"
+        : "text-gray-600 hover:text-lime-600"
     }`;
 
   return (
@@ -57,12 +57,12 @@ const Navbar = () => {
           className="flex shrink-0 items-center gap-2.5"
           aria-label="Evo Store Home"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm shadow-indigo-600/20">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-700 text-white shadow-sm shadow-indigo-600/20">
             <ShoppingBag size={22} strokeWidth={2} />
           </span>
 
           <span className="text-xl font-bold tracking-tight text-gray-900">
-            Evo<span className="text-indigo-600">Store</span>
+            Evo<span className="text-lime-700">Store</span>
           </span>
         </Link>
 
@@ -82,7 +82,7 @@ const Navbar = () => {
         {/* Desktop Actions */}
         <div className="hidden items-center gap-4 sm:flex">
           {/* Search */}
-          <div className="hidden items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 transition focus-within:border-indigo-400 focus-within:bg-white lg:flex">
+          <div className="hidden items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 transition focus-within:border-lime-500 focus-within:bg-white lg:flex">
             <Search size={17} className="shrink-0 text-gray-400" />
 
             <input
@@ -97,11 +97,11 @@ const Navbar = () => {
           <Link
             href="/cart"
             aria-label="Shopping cart"
-            className="relative rounded-full p-2.5 text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600"
+            className="relative rounded-full p-2.5 text-gray-600 transition hover:bg-gray-100 hover:text-lime-700"
           >
             <ShoppingCart size={21} strokeWidth={1.8} />
 
-            <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-indigo-600 px-1 text-[10px] font-semibold text-white">
+            <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-lime-700 px-1 text-[10px] font-semibold text-white">
               3
             </span>
           </Link>
@@ -124,7 +124,7 @@ const Navbar = () => {
               {isAdmin && (
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 transition hover:border-indigo-200 hover:bg-indigo-100"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm font-semibold text-lime-700 transition hover:border-indigo-200 hover:bg-indigo-100"
                 >
                   <ShieldCheck size={16} />
                   Dashboard
@@ -144,14 +144,14 @@ const Navbar = () => {
             <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
               <Link
                 href="/login"
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 hover:text-indigo-600"
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 hover:text-lime-700"
               >
                 Login
               </Link>
 
               <Link
                 href="/register"
-                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.98]"
+                className="rounded-lg bg-lime-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-lime-800 active:scale-[0.98]"
               >
                 Register
               </Link>
@@ -201,7 +201,7 @@ const Navbar = () => {
             <Link
               href="/cart"
               tabIndex={open ? 0 : -1}
-              className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-indigo-600"
+              className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-gray-600 transition hover:bg-gray-50 hover:text-lime-700"
             >
               <ShoppingCart size={18} />
               Shopping Cart
@@ -227,7 +227,7 @@ const Navbar = () => {
                 <Link
                   href="/dashboard"
                   tabIndex={open ? 0 : -1}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-indigo-50 px-4 py-3 text-sm font-semibold text-lime-700 transition hover:bg-indigo-100"
                 >
                   <ShieldCheck size={18} />
                   Dashboard
@@ -256,7 +256,7 @@ const Navbar = () => {
               <Link
                 href="/register"
                 tabIndex={open ? 0 : -1}
-                className="flex-1 rounded-lg bg-indigo-600 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-indigo-700"
+                className="flex-1 rounded-lg bg-lime-700 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-lime-800"
               >
                 Register
               </Link>

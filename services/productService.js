@@ -1,7 +1,7 @@
 import api from "@/lib/axios";
 
 // get all products
-export  async function getProducts() {
+export async function getProducts() {
   try {
     const res = await api.get("/products");
 
@@ -14,19 +14,18 @@ export  async function getProducts() {
 
 // get single product by id
 export async function getProductById(id) {
-  try{
-      const res = await api.get(`/products/${id}`);
-        return res.data.data;
+  try {
+    const res = await api.get(`/products/${id}`);
+    return res.data.data;
   } catch (error) {
     console.error("Error fetching product:", error);
     throw error;
   }
-
 }
 
 // create product
 export async function createProduct(productData) {
-try {
+  try {
     // 1. تعريف الـ FormData هنا بشكل صحيح
     const formData = new FormData();
 
@@ -39,6 +38,7 @@ try {
     formData.append("stock", productData.stock || 0);
     formData.append("category", productData.category || "");
     formData.append("isFeatured", productData.isFeatured || false);
+    formData.append("showInProductSlider", productData.showInProductSlider || false);
     formData.append("rating", productData.rating || 0);
     formData.append("numReviews", productData.numReviews || 0);
 
@@ -83,6 +83,17 @@ export async function deleteProduct(id) {
     return res.data.data;
   } catch (error) {
     console.error("Error deleting product:", error);
+    throw error;
+  }
+}
+
+// get Slider Products
+export async function getSliderProducts() {
+  try {
+    const res = await api.get("/products/slider");
+    return res.data.data;
+  } catch (error) {
+    console.error("Error product slider:", error);
     throw error;
   }
 }

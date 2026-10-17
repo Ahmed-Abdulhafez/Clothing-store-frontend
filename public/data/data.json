@@ -12,6 +12,11 @@
       "icon": "ShoppingBag"
     },
     {
+      "name": "categories",
+      "href": "/dashboard/categories",
+      "icon": "ShoppingBag"
+    },
+    {
       "name": "Orders",
       "href": "/dashboard/orders",
       "icon": "ShoppingCart"

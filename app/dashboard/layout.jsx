@@ -43,33 +43,3 @@ export default function DashboardLayout({ children }) {
   );
 }
 
-// "use client";
-
-// import Sidebar from "@/components/dashboardLayout/Sidebar";
-// import Header from "../../components/dashboardLayout/Header";
-
-// export default function DashboardLayout({ children }) {
-//   return (
-//     <div className="min-h-screen">
-//       {/* Sidebar */}
-//       <aside className="fixed left-0 top-5 z-50 h-screen w-64">
-//         <Sidebar />
-//       </aside>
-
-//       {/* Main Area */}
-//       <div className="ml-64">
-//         {/* Header */}
-//         <header className="fixed left-64 right-0 top-0 z-40 h-16">
-//           <Header />
-//         </header>
-
-//         {/* Content */}
-//         <main className="pt-16">
-//           <div className="mx-auto w-full max-w-7xl px-9 py-6">
-//             {children}
-//           </div>
-//         </main>
-//       </div>
-//     </div>
-//   );
-// }

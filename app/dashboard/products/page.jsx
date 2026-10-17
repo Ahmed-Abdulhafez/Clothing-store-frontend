@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import {
   Pencil,
   Plus,
   Search,
+  Tag,
   Trash2,
   X,
 } from "lucide-react";
@@ -37,9 +37,7 @@ function StatCard({ title, value, icon: Icon }) {
         <div>
           <p className="text-sm text-gray-400">{title}</p>
 
-          <p className="mt-2 text-2xl font-bold text-gray-100">
-            {value}
-          </p>
+          <p className="mt-2 text-2xl font-bold text-gray-100">{value}</p>
         </div>
 
         <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-500/10">
@@ -89,13 +87,7 @@ export default function DashboardProductsPage() {
   const [productToDelete, setProductToDelete] = useState(null);
 
   // Fetch products.
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
@@ -111,8 +103,10 @@ export default function DashboardProductsPage() {
 
     return products.filter((product) =>
       [product.title, product.brand, product._id].some((value) =>
-        String(value ?? "").toLowerCase().includes(term)
-      )
+        String(value ?? "")
+          .toLowerCase()
+          .includes(term),
+      ),
     );
   }, [products, searchTerm]);
 
@@ -131,7 +125,7 @@ export default function DashboardProductsPage() {
     onError: (mutationError) => {
       console.error(
         "Error deleting product:",
-        mutationError.response?.data || mutationError.message
+        mutationError.response?.data || mutationError.message,
       );
     },
   });
@@ -143,9 +137,7 @@ export default function DashboardProductsPage() {
         <div className="flex flex-col items-center gap-3">
           <LoaderCircle className="h-8 w-8 animate-spin text-emerald-400" />
 
-          <p className="text-sm text-gray-400">
-            Loading products...
-          </p>
+          <p className="text-sm text-gray-400">Loading products...</p>
         </div>
       </div>
     );
@@ -155,9 +147,7 @@ export default function DashboardProductsPage() {
   if (isError) {
     return (
       <div className="rounded-xl border border-red-900/60 bg-[#1e1e1e] p-6">
-        <h2 className="font-semibold text-red-400">
-          Failed to load products
-        </h2>
+        <h2 className="font-semibold text-red-400">Failed to load products</h2>
 
         <p className="mt-2 text-sm text-gray-400">
           {error?.message || "An unexpected error occurred."}
@@ -179,6 +169,11 @@ export default function DashboardProductsPage() {
       {/* Page Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
+          <div className="mb-2 flex items-center pt-5 gap-2 text-emerald-400">
+            <Tag size={19} />
+
+            <span className="text-sm font-medium">Store Management</span>
+          </div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-100">
             Products
           </h1>
@@ -198,7 +193,7 @@ export default function DashboardProductsPage() {
       </header>
 
       {/* Statistics */}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Total Products"
           value={products.length}
@@ -208,6 +203,13 @@ export default function DashboardProductsPage() {
         <StatCard
           title="Featured Products"
           value={products.filter((product) => product.isFeatured).length}
+          icon={Package}
+        />
+        <StatCard
+          title="Slider Products"
+          value={
+            products.filter((product) => product.showInProductSlider).length
+          }
           icon={Package}
         />
 
@@ -332,9 +334,7 @@ export default function DashboardProductsPage() {
                     {/* Price */}
                     <td className="px-5 py-4">
                       <p className="text-sm font-semibold text-gray-100">
-                        {product.price != null
-                          ? `$${product.price}`
-                          : "—"}
+                        {product.price != null ? `$${product.price}` : "—"}
                       </p>
 
                       {product.offerPrice != null &&
@@ -461,8 +461,8 @@ export default function DashboardProductsPage() {
               </div>
 
               <p className="mt-4 text-sm leading-6 text-gray-400">
-                Are you sure you want to delete this product?
-                This action cannot be undone.
+                Are you sure you want to delete this product? This action cannot
+                be undone.
               </p>
 
               <p className="mt-2 break-words font-semibold text-gray-100">
@@ -493,9 +493,7 @@ export default function DashboardProductsPage() {
 
               <button
                 type="button"
-                disabled={
-                  deleteMutation.isPending || !productToDelete._id
-                }
+                disabled={deleteMutation.isPending || !productToDelete._id}
                 onClick={() => {
                   deleteMutation.mutate(productToDelete._id);
                 }}
