@@ -2,9 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { getCategoryById } from "@/services/productService";
+import { getCategoryById } from "@/services/categoriesService";
 
-export default function ProductId() {
+export default function catygorytId() {
   const { id } = useParams();
 
   const {

@@ -104,11 +104,11 @@ export default function ProductDetailsPage() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#171717] text-gray-300">
+      <main className="flex min-h-[70vh] items-center justify-center bg-[#f5faf6] text-gray-700">
         <div className="flex flex-col items-center gap-4">
           <LoaderCircle
             size={38}
-            className="animate-spin text-emerald-400"
+            className="animate-spin text-emerald-700"
           />
           <p>جاري تحميل تفاصيل المنتج...</p>
         </div>
@@ -120,9 +120,9 @@ export default function ProductDetailsPage() {
     return (
       <main
         dir="rtl"
-        className="flex min-h-[70vh] items-center justify-center bg-[#171717] px-4 text-gray-100"
+        className="flex min-h-[70vh] items-center justify-center bg-[#f5faf6] px-4 text-gray-900"
       >
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#1e1e1e] p-8 text-center">
+        <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-8 text-center">
           <Package
             size={42}
             className="mx-auto mb-4 text-gray-500"
@@ -140,7 +140,7 @@ export default function ProductDetailsPage() {
 
           <button
             onClick={() => refetch()}
-            className="inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-black hover:bg-emerald-400"
+            className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800"
           >
             <RefreshCw size={17} />
             إعادة المحاولة
@@ -148,7 +148,7 @@ export default function ProductDetailsPage() {
 
           <Link
             href="/products"
-            className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-white/10 px-5 py-3 text-sm text-gray-300 hover:text-emerald-300"
+            className="mt-3 flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3 text-sm text-gray-700 hover:text-emerald-800"
           >
             <ArrowRight size={17} />
             العودة للمنتجات
@@ -208,12 +208,12 @@ export default function ProductDetailsPage() {
   return (
     <main
       dir="rtl"
-      className="min-h-screen bg-[#171717] text-gray-100"
+      className="min-h-screen bg-[#f5faf6] text-gray-900"
     >
       <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-8 flex items-center gap-2 text-sm text-gray-500">
-          <Link href="/" className="hover:text-emerald-400">
+          <Link href="/" className="hover:text-emerald-700">
             الرئيسية
           </Link>
 
@@ -221,14 +221,14 @@ export default function ProductDetailsPage() {
 
           <Link
             href="/products"
-            className="hover:text-emerald-400"
+            className="hover:text-emerald-700"
           >
             المنتجات
           </Link>
 
           <ChevronLeft size={16} />
 
-          <span className="truncate text-gray-300">
+          <span className="truncate text-gray-700">
             {title}
           </span>
         </nav>
@@ -236,22 +236,22 @@ export default function ProductDetailsPage() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Images */}
           <section className="min-w-0">
-            <div className="relative flex aspect-square max-h-[620px] items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-[#1e1e1e] p-6 sm:p-10">
+            <div className="relative flex aspect-square max-h-[620px] items-center justify-center overflow-hidden rounded-3xl border border-gray-200 bg-white p-6 sm:p-10">
               {image ? (
                 <img
                   src={image}
                   alt={title}
-                  className="h-full w-full object-contain transition duration-500 hover:scale-105"
+                  className="h-full w-full object-cover transition duration-500 hover:scale-105"
                 />
               ) : (
-                <div className="flex flex-col items-center gap-3 text-gray-600">
+                <div className="flex flex-col items-center gap-3 text-gray-400">
                   <Package size={60} strokeWidth={1.2} />
                   <span>لا توجد صورة للمنتج</span>
                 </div>
               )}
 
               {hasDiscount && (
-                <span className="absolute right-5 top-5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-bold text-black">
+                <span className="absolute right-5 top-5 rounded-full bg-emerald-700 px-4 py-2 text-sm font-bold text-white">
                   خصم {discount}%
                 </span>
               )}
@@ -263,8 +263,8 @@ export default function ProductDetailsPage() {
                 onClick={() => setIsFavorite((value) => !value)}
                 className={`absolute left-5 top-5 flex h-11 w-11 items-center justify-center rounded-full border transition ${
                   isFavorite
-                    ? "border-rose-400/30 bg-rose-400/10 text-rose-400"
-                    : "border-white/10 bg-black/20 text-gray-300 hover:text-rose-400"
+                    ? "border-rose-200 bg-rose-50 text-rose-600"
+                    : "border-gray-200 bg-white/90 text-gray-700 hover:text-rose-600"
                 }`}
               >
                 <Heart
@@ -283,10 +283,10 @@ export default function ProductDetailsPage() {
                     onClick={() => setActiveImage(index)}
                     aria-label={`عرض الصورة ${index + 1}`}
                     aria-pressed={activeImage === index}
-                    className={`h-20 w-20 shrink-0 rounded-xl border-2 bg-[#1e1e1e] p-2 transition sm:h-24 sm:w-24 ${
+                    className={`h-20 w-20 shrink-0 rounded-xl border-2 bg-white p-2 transition sm:h-24 sm:w-24 ${
                       activeImage === index
-                        ? "border-emerald-400"
-                        : "border-white/10 hover:border-white/30"
+                        ? "border-emerald-600"
+                        : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <img
@@ -304,13 +304,13 @@ export default function ProductDetailsPage() {
           <section className="flex min-w-0 flex-col">
             <div className="mb-4 flex flex-wrap gap-2">
               {product.brand && (
-                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">
+                <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800">
                   {product.brand}
                 </span>
               )}
 
               {product.isFeatured && (
-                <span className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-xs font-semibold text-amber-300">
+                <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800">
                   منتج مميز
                 </span>
               )}
@@ -334,13 +334,13 @@ export default function ProductDetailsPage() {
                     className={
                       index < Math.round(rating)
                         ? ""
-                        : "text-gray-600"
+                        : "text-gray-400"
                     }
                   />
                 ))}
               </div>
 
-              <span className="text-sm text-gray-300">
+              <span className="text-sm text-gray-700">
                 {rating.toFixed(1)} / 5
               </span>
 
@@ -349,9 +349,9 @@ export default function ProductDetailsPage() {
               </span>
             </div>
 
-            <div className="my-6 border-y border-white/10 py-6">
+            <div className="my-6 border-y border-gray-200 py-6">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-3xl font-bold text-emerald-400">
+                <span className="text-3xl font-bold text-emerald-700">
                   {formatPrice(finalPrice)}
                 </span>
 
@@ -361,7 +361,7 @@ export default function ProductDetailsPage() {
                       {formatPrice(price)}
                     </span>
 
-                    <span className="rounded-lg bg-rose-400/10 px-2.5 py-1 text-sm text-rose-300">
+                    <span className="rounded-lg bg-rose-50 px-2.5 py-1 text-sm text-rose-700">
                       وفّر {formatPrice(price - offerPrice)}
                     </span>
                   </>
@@ -386,13 +386,13 @@ export default function ProductDetailsPage() {
             <div className="mb-6 flex items-center gap-3">
               <span
                 className={`h-2.5 w-2.5 rounded-full ${
-                  stock > 0 ? "bg-emerald-400" : "bg-rose-400"
+                  stock > 0 ? "bg-emerald-600" : "bg-rose-500"
                 }`}
               />
 
               <span
                 className={`text-sm ${
-                  stock > 0 ? "text-emerald-300" : "text-rose-300"
+                  stock > 0 ? "text-emerald-800" : "text-rose-700"
                 }`}
               >
                 {stock > 0
@@ -405,22 +405,22 @@ export default function ProductDetailsPage() {
 
             {/* Quantity */}
             <div className="mb-5">
-              <label className="mb-3 block text-sm font-semibold text-gray-300">
+              <label className="mb-3 block text-sm font-semibold text-gray-700">
                 الكمية
               </label>
 
-              <div className="inline-flex items-center overflow-hidden rounded-xl border border-white/10 bg-[#1e1e1e]">
+              <div className="inline-flex items-center overflow-hidden rounded-xl border border-gray-200 bg-white">
                 <button
                   type="button"
                   aria-label="زيادة الكمية"
                   disabled={quantity >= stock}
                   onClick={() => handleQuantity(1)}
-                  className="flex h-12 w-12 items-center justify-center hover:text-emerald-400 disabled:opacity-30"
+                  className="flex h-12 w-12 items-center justify-center hover:text-emerald-700 disabled:opacity-30"
                 >
                   <Plus size={18} />
                 </button>
 
-                <span className="flex h-12 min-w-14 items-center justify-center border-x border-white/10 font-semibold">
+                <span className="flex h-12 min-w-14 items-center justify-center border-x border-gray-200 font-semibold">
                   {quantity}
                 </span>
 
@@ -429,7 +429,7 @@ export default function ProductDetailsPage() {
                   aria-label="تقليل الكمية"
                   disabled={quantity <= 1}
                   onClick={() => handleQuantity(-1)}
-                  className="flex h-12 w-12 items-center justify-center hover:text-emerald-400 disabled:opacity-30"
+                  className="flex h-12 w-12 items-center justify-center hover:text-emerald-700 disabled:opacity-30"
                 >
                   <Minus size={18} />
                 </button>
@@ -440,7 +440,7 @@ export default function ProductDetailsPage() {
               type="button"
               onClick={handleAddToCart}
               disabled={stock === 0 || cartMutation.isPending}
-              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-xl bg-emerald-500 px-6 py-4 font-bold text-black transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-400"
+              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-xl bg-emerald-700 px-6 py-4 font-bold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-500"
             >
               {cartMutation.isPending ? (
                 <LoaderCircle size={21} className="animate-spin" />
@@ -464,8 +464,8 @@ export default function ProductDetailsPage() {
                 role="status"
                 className={`mt-3 rounded-xl border p-3 text-sm leading-6 ${
                   cartMutation.isError
-                    ? "border-rose-400/20 bg-rose-400/5 text-rose-300"
-                    : "border-emerald-400/20 bg-emerald-400/5 text-emerald-300"
+                    ? "border-rose-400/20 bg-rose-50 text-rose-700"
+                    : "border-emerald-200 bg-emerald-50 text-emerald-800"
                 }`}
               >
                 {message}
@@ -474,30 +474,30 @@ export default function ProductDetailsPage() {
 
             <Link
               href="/products"
-              className="mt-3 flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/10 text-sm text-gray-300 transition hover:border-emerald-400/30 hover:text-emerald-300"
+              className="mt-3 flex min-h-12 items-center justify-center gap-2 rounded-xl border border-gray-200 text-sm text-gray-700 transition hover:border-emerald-200 hover:text-emerald-800"
             >
               <ArrowRight size={17} />
               متابعة التسوق
             </Link>
 
-            <div className="mt-8 grid grid-cols-1 gap-3 border-t border-white/10 pt-6 sm:grid-cols-3">
-              <div className="flex items-center gap-3 rounded-xl bg-[#1e1e1e] p-3">
-                <Truck size={21} className="shrink-0 text-emerald-400" />
-                <span className="text-xs leading-6 text-gray-300">
+            <div className="mt-8 grid grid-cols-1 gap-3 border-t border-gray-200 pt-6 sm:grid-cols-3">
+              <div className="flex items-center gap-3 rounded-xl bg-white p-3">
+                <Truck size={21} className="shrink-0 text-emerald-700" />
+                <span className="text-xs leading-6 text-gray-700">
                   خيارات التوصيل
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 rounded-xl bg-[#1e1e1e] p-3">
-                <ShieldCheck size={21} className="shrink-0 text-emerald-400" />
-                <span className="text-xs leading-6 text-gray-300">
+              <div className="flex items-center gap-3 rounded-xl bg-white p-3">
+                <ShieldCheck size={21} className="shrink-0 text-emerald-700" />
+                <span className="text-xs leading-6 text-gray-700">
                   تسوق آمن
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 rounded-xl bg-[#1e1e1e] p-3">
-                <Package size={21} className="shrink-0 text-emerald-400" />
-                <span className="text-xs leading-6 text-gray-300">
+              <div className="flex items-center gap-3 rounded-xl bg-white p-3">
+                <Package size={21} className="shrink-0 text-emerald-700" />
+                <span className="text-xs leading-6 text-gray-700">
                   متابعة الطلب
                 </span>
               </div>
