@@ -1,6 +1,7 @@
 import CategoriesSection from "@/components/home/CategoriesSection";
 import Slider from "../components/mianPage/slider/Slider";
 import Link from "next/link";
+import CartHomePage from "@/components/home/CartHomePage";
 
 export default function Home() {
   return (
@@ -39,7 +40,7 @@ export default function Home() {
 
           {/* هنربط المنتجات الحقيقية بالـ API في الخطوة التالية */}
           <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
-            Products will appear here.
+            <CartHomePage/>
           </div>
         </section>
       </div>
