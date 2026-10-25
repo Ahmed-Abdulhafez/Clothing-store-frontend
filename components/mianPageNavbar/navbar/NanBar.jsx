@@ -25,20 +25,20 @@ const NAV_LINKS = [
 const Navbar = () => {
   const { user, logout } = useAuth();
 
-const { data } = useQuery({
-  queryKey: ["carts"],
-  queryFn: getUserCart,
-  enabled: !!user,
-});
+  const { data } = useQuery({
+    queryKey: ["carts"],
+    queryFn: getUserCart,
+    enabled: !!user,
+  });
 
-const cartItems = Array.isArray(data?.cart?.cartItems)
-  ? data.cart.cartItems
-  : [];
+  const cartItems = Array.isArray(data?.cart?.cartItems)
+    ? data.cart.cartItems
+    : [];
 
-const cartCount = cartItems.reduce(
-  (total, item) => total + (Number(item.quantity) || 0),
-  0
-);
+  const cartCount = cartItems.reduce(
+    (total, item) => total + (Number(item.quantity) || 0),
+    0,
+  );
 
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -123,18 +123,19 @@ const cartCount = cartItems.reduce(
           {/* Authenticated User */}
           {user ? (
             <div className="flex items-center gap-3 border-l border-gray-200 pl-4">
-              <div className="flex flex-col items-end">
-                <span className="max-w-32 truncate text-sm font-semibold text-gray-800">
-                  {user.username || "User"}
-                </span>
-
-                {isAdmin && (
-                  <span className="text-[11px] font-medium text-emerald-600">
-                    Administrator
+              <Link href="/account">
+                <div className="flex flex-col items-end">
+                  <span className="max-w-32 truncate text-sm font-semibold text-gray-800">
+                    {user.username || "User"}
                   </span>
-                )}
-              </div>
 
+                  {isAdmin && (
+                    <span className="text-[11px] font-medium text-emerald-600">
+                      Administrator
+                    </span>
+                  )}
+                </div>
+              </Link>
               {isAdmin && (
                 <Link
                   href="/dashboard"
