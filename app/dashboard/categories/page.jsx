@@ -1,13 +1,8 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertCircle,
   FolderOpen,
@@ -21,10 +16,7 @@ import {
   X,
 } from "lucide-react";
 
-import {
-  deleteCategory,
-  getCategories,
-} from "@/services/categoriesService";
+import { deleteCategory, getCategories } from "@/services/categoriesService";
 
 export default function DashboardCategoriesPage() {
   const queryClient = useQueryClient();
@@ -33,13 +25,7 @@ export default function DashboardCategoriesPage() {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
   // Fetch categories
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
@@ -85,10 +71,7 @@ export default function DashboardCategoriesPage() {
     },
 
     onError: (error) => {
-      console.error(
-        "DELETE CATEGORY ERROR:",
-        error.response?.data || error,
-      );
+      console.error("DELETE CATEGORY ERROR:", error.response?.data || error);
     },
   });
 
@@ -120,24 +103,19 @@ export default function DashboardCategoriesPage() {
   return (
     <main className="min-h-screen bg-[#171717] p-4 text-gray-100 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl space-y-7">
-
         {/* Page Header */}
         <header className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <div>
             <div className="mb-2 flex items-center gap-2 text-emerald-400">
               <Tag size={19} />
 
-              <span className="text-sm font-medium">
-                Store Management
-              </span>
+              <span className="text-sm font-medium">Store Management</span>
             </div>
 
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              Categories
-            </h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">Categories</h1>
 
             <p className="mt-2 text-sm text-gray-400">
-             Manage categories and their images in the store.
+              Manage categories and their images in the store.
             </p>
           </div>
 
@@ -179,9 +157,7 @@ export default function DashboardCategoriesPage() {
               <input
                 type="search"
                 value={searchTerm}
-                onChange={(event) =>
-                  setSearchTerm(event.target.value)
-                }
+                onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="ابحث عن تصنيف بالاسم..."
                 aria-label="البحث عن تصنيف"
                 className="w-full rounded-xl border border-gray-700 bg-[#252525] py-3 pl-11 pr-11 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10"
@@ -208,12 +184,8 @@ export default function DashboardCategoriesPage() {
         {/* Loading State */}
         {isLoading && (
           <div className="flex min-h-64 items-center justify-center gap-3 text-gray-400">
-            <LoaderCircle
-              size={24}
-              className="animate-spin text-emerald-400"
-            />
-
-           Loading categories...
+            <LoaderCircle size={24} className="animate-spin text-emerald-400" />
+            Loading categories...
           </div>
         )}
 
@@ -223,14 +195,9 @@ export default function DashboardCategoriesPage() {
             role="alert"
             className="rounded-2xl border border-red-500/20 bg-[#1e1e1e] p-8 text-center"
           >
-            <AlertCircle
-              size={34}
-              className="mx-auto text-red-400"
-            />
+            <AlertCircle size={34} className="mx-auto text-red-400" />
 
-            <h2 className="mt-4 font-semibold">
-              Try Again
-            </h2>
+            <h2 className="mt-4 font-semibold">Try Again</h2>
 
             <p className="mt-2 text-sm text-gray-400">
               {error?.response?.data?.message ||
@@ -243,7 +210,7 @@ export default function DashboardCategoriesPage() {
               onClick={() => refetch()}
               className="mt-5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500"
             >
-             Try Again
+              Try Again
             </button>
           </div>
         )}
@@ -293,7 +260,7 @@ export default function DashboardCategoriesPage() {
                 id="delete-dialog-title"
                 className="text-lg font-semibold text-gray-100"
               >
-               Confirm Deletion
+                Confirm Deletion
               </h2>
 
               <button
@@ -316,8 +283,8 @@ export default function DashboardCategoriesPage() {
                 id="delete-dialog-description"
                 className="mt-4 text-sm leading-6 text-gray-400"
               >
-               Are you sure you want to delete this category?
-                This action cannot be undone.
+                Are you sure you want to delete this category? This action
+                cannot be undone.
               </p>
 
               <p className="mt-3 break-words font-semibold text-gray-100">
@@ -329,10 +296,7 @@ export default function DashboardCategoriesPage() {
                   role="alert"
                   className="mt-4 flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-right text-sm text-red-300"
                 >
-                  <AlertCircle
-                    size={18}
-                    className="mt-0.5 shrink-0"
-                  />
+                  <AlertCircle size={18} className="mt-0.5 shrink-0" />
 
                   <span>{deleteErrorMessage}</span>
                 </div>
@@ -357,10 +321,7 @@ export default function DashboardCategoriesPage() {
               >
                 {deleteMutation.isPending ? (
                   <>
-                    <LoaderCircle
-                      size={17}
-                      className="animate-spin"
-                    />
+                    <LoaderCircle size={17} className="animate-spin" />
                     Deleting...
                   </>
                 ) : (
@@ -437,9 +398,7 @@ function CategoryCard({ category, onDelete }) {
               {category.name}
             </h2>
 
-            <p className="mt-1 text-xs text-gray-500">
-              Category Name
-            </p>
+            <p className="mt-1 text-xs text-gray-500">Category Name</p>
           </div>
         </div>
 
@@ -476,15 +435,11 @@ function EmptyState({ hasSearch, onClearSearch }) {
       </div>
 
       <h2 className="mt-5 text-lg font-semibold">
-        {hasSearch
-          ? "لا توجد نتائج"
-          : "لا توجد تصنيفات حتى الآن"}
+        {hasSearch ? "لا توجد نتائج" : "لا توجد تصنيفات حتى الآن"}
       </h2>
 
       <p className="mt-2 text-sm text-gray-400">
-        {hasSearch
-          ? "جرّب البحث باسم مختلف."
-          : "ابدأ بإضافة أول تصنيف لمتجرك."}
+        {hasSearch ? "جرّب البحث باسم مختلف." : "ابدأ بإضافة أول تصنيف لمتجرك."}
       </p>
 
       {hasSearch ? (
@@ -493,7 +448,7 @@ function EmptyState({ hasSearch, onClearSearch }) {
           onClick={onClearSearch}
           className="mt-5 text-sm font-medium text-emerald-400 transition hover:text-emerald-300"
         >
-         Clear Search
+          Clear Search
         </button>
       ) : (
         <Link

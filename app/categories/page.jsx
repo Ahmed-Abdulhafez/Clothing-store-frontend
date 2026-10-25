@@ -1,24 +1,12 @@
-
 "use client";
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/services/categoriesService";
-import {
-  ArrowLeft,
-  FolderOpen,
-  RefreshCw,
-  Shapes,
-} from "lucide-react";
+import { ArrowLeft, FolderOpen, RefreshCw, Shapes } from "lucide-react";
 
 export default function GetAllCategories() {
-  const {
-    data,
-    isLoading,
-    isError,
-    refetch,
-    isFetching,
-  } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
   });
@@ -169,9 +157,7 @@ export default function GetAllCategories() {
                 ) : (
                   <div className="flex h-full flex-col items-center justify-center gap-3 text-[#91A398]">
                     <FolderOpen className="h-12 w-12 stroke-[1.3]" />
-                    <span className="text-xs font-medium">
-                      لا توجد صورة
-                    </span>
+                    <span className="text-xs font-medium">لا توجد صورة</span>
                   </div>
                 )}
 
@@ -189,9 +175,7 @@ export default function GetAllCategories() {
                     {category.name || "تصنيف بدون اسم"}
                   </h2>
 
-                  <p className="mt-1 text-xs text-[#91A398]">
-                    اكتشف المنتجات
-                  </p>
+                  <p className="mt-1 text-xs text-[#91A398]">اكتشف المنتجات</p>
                 </div>
 
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F0F6F0] text-[#278653] transition-all duration-300 group-hover:bg-[#278653] group-hover:text-white">

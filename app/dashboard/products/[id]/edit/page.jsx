@@ -202,7 +202,6 @@ export default function EditProductPage() {
       category: String(currentCategory),
       isFeatured: product.isFeatured ?? false,
       showInProductSlider: product.showInProductSlider ?? false,
-
     });
 
     setExistingImages(Array.isArray(product.images) ? product.images : []);
@@ -373,7 +372,6 @@ export default function EditProductPage() {
     formData.append("category", form.category);
     formData.append("isFeatured", String(form.isFeatured));
     formData.append("showInProductSlider", String(form.showInProductSlider));
-
 
     // Existing images that should remain.
     formData.append(

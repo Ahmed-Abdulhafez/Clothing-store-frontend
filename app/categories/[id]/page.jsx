@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -20,14 +19,7 @@ export default function CategoryIdPage() {
   const params = useParams();
   const id = params?.id;
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch,
-    isFetching,
-  } = useQuery({
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["category", id],
     queryFn: () => getCategoryWithProducts(id),
     enabled: Boolean(id),
@@ -40,10 +32,7 @@ export default function CategoryIdPage() {
 
   if (isLoading) {
     return (
-      <main
-        dir="rtl"
-        className="min-h-screen bg-[#f5faf6] px-4 py-12 sm:px-8"
-      >
+      <main dir="rtl" className="min-h-screen bg-[#f5faf6] px-4 py-12 sm:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 h-8 w-48 animate-pulse rounded-lg bg-green-100" />
           <div className="mb-10 h-36 animate-pulse rounded-3xl bg-green-100" />
@@ -104,10 +93,7 @@ export default function CategoryIdPage() {
         className="flex min-h-[60vh] items-center justify-center bg-[#f5faf6] px-4"
       >
         <div className="text-center">
-          <PackageOpen
-            size={48}
-            className="mx-auto mb-4 text-emerald-700"
-          />
+          <PackageOpen size={48} className="mx-auto mb-4 text-emerald-700" />
           <h1 className="mb-2 text-xl font-bold text-gray-900">
             القسم غير موجود
           </h1>
@@ -127,17 +113,11 @@ export default function CategoryIdPage() {
   }
 
   return (
-    <main
-      dir="rtl"
-      className="min-h-screen bg-[#f5faf6] text-gray-900"
-    >
+    <main dir="rtl" className="min-h-screen bg-[#f5faf6] text-gray-900">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 text-sm text-gray-500">
-          <Link
-            href="/"
-            className="transition hover:text-emerald-700"
-          >
+          <Link href="/" className="transition hover:text-emerald-700">
             الرئيسية
           </Link>
 
@@ -173,17 +153,14 @@ export default function CategoryIdPage() {
               </h1>
 
               <p className="max-w-xl text-sm leading-7 text-gray-600 sm:text-base">
-                اكتشف المنتجات المتوفرة في هذا القسم واختر ما يناسبك من
-                مجموعة منتجاتنا.
+                اكتشف المنتجات المتوفرة في هذا القسم واختر ما يناسبك من مجموعة
+                منتجاتنا.
               </p>
 
               <div className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white/80 px-4 py-2.5 text-sm font-medium text-gray-700 ring-1 ring-emerald-100">
                 <ShoppingBag size={17} className="text-emerald-700" />
                 <span>
-                  {products.length}{" "}
-                  {products.length === 1
-                    ? "منتج"
-                    : "منتجات"}
+                  {products.length} {products.length === 1 ? "منتج" : "منتجات"}
                 </span>
               </div>
             </div>
@@ -222,8 +199,8 @@ export default function CategoryIdPage() {
               </h3>
 
               <p className="text-sm leading-7 text-gray-500">
-                لم تتم إضافة منتجات لهذا القسم بعد. يمكنك العودة لاستكشاف
-                باقي الأقسام.
+                لم تتم إضافة منتجات لهذا القسم بعد. يمكنك العودة لاستكشاف باقي
+                الأقسام.
               </p>
 
               <Link

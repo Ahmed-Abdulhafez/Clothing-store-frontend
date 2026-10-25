@@ -89,12 +89,12 @@ export default function CartPage() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["cart"],
+    queryKey: ["carts"],
     queryFn: getUserCart,
   });
 
   const refreshCart = () =>
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
+    queryClient.invalidateQueries({ queryKey: ["carts"] });
 
   const updateQuantityMutation = useMutation({
     mutationFn: ({ id, quantity }) => updateSpecificQuantity(id, quantity),
@@ -181,7 +181,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#171717] px-4 py-10 text-white sm:px-6 lg:px-10">
+    <main className="min-h-screen  pt-25 bg-[#171717] px-4 py-10 text-white sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
         {/* Page Header */}
         <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
@@ -246,7 +246,7 @@ export default function CartPage() {
                 const imageUrl = getProductImage(product);
                 const price = getProductPrice(product);
                 const quantity = Math.max(1, Number(item.quantity) || 1);
-                const itemId = item._id;
+                const itemId = item.product?._id;
                 const productName = product.title || product.name || "Product";
 
                 return (

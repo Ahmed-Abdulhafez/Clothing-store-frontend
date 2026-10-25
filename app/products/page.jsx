@@ -12,6 +12,8 @@ import {
   RefreshCw,
   Star,
   X,
+  Heart,
+  Eye,
 } from "lucide-react";
 
 import { getProducts } from "@/services/productService";
@@ -62,6 +64,21 @@ export default function ProductsPage() {
   const [sort, setSort] = useState("default");
   const [availability, setAvailability] = useState("all");
   const [notice, setNotice] = useState(null);
+  const [favorites, setFavorites] = useState(() => new Set());
+
+  const toggleFavorite = (productId) => {
+    setFavorites((currentFavorites) => {
+      const nextFavorites = new Set(currentFavorites);
+
+      if (nextFavorites.has(productId)) {
+        nextFavorites.delete(productId);
+      } else {
+        nextFavorites.add(productId);
+      }
+
+      return nextFavorites;
+    });
+  };
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["products"],
@@ -124,7 +141,7 @@ export default function ProductsPage() {
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["cart"],
+        queryKey: ["carts"],
       });
     },
 
@@ -187,10 +204,10 @@ export default function ProductsPage() {
         <header className="mb-7">
           <div className="flex items-center justify-between gap-4">
             <h1 className="text-2xl font-bold text-[#26382D] sm:text-3xl">
-              منتجاتنا
+              Our Products
             </h1>
 
-            <p className="text-xs font-semibold tracking-widest text-[#278653] sm:text-sm">
+            <p className="text-xl font-black tracking-wider text-[#278653] sm:text-2xl">
               EVO STORE
             </p>
           </div>
@@ -198,12 +215,12 @@ export default function ProductsPage() {
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
               <p className="mt-2 text-sm text-[#718075]">
-                اكتشف المنتجات واختر ما يناسبك.
+                Discover our products and find what suits you best
               </p>
             </div>
 
-            <p className="text-sm text-[#718075]">
-              {filteredProducts.length} منتج
+            <p className="text-x1 text-amber-700 font-black tracking-wider">
+              <span className="text-x1 text-[#278653]">{filteredProducts.length}</span> Item
             </p>
           </div>
         </header>
@@ -328,116 +345,174 @@ export default function ProductsPage() {
               const isAdding =
                 addMutation.isPending &&
                 addMutation.variables?._id === product._id;
+              const isFavorite = favorites.has(product._id);
 
               return (
                 <article
                   key={product._id}
-                  className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-[#E1E9E1] bg-white shadow-sm transition duration-300 hover:border-[#A7D5B5] hover:shadow-md"
+                  className="group min-w-0 overflow-hidden rounded-2xl border border-[#E1E9E1] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#B5D7BE] hover:shadow-xl hover:shadow-[#26382D]/10"
                 >
-                  <Link
-                    href={`/products/${product._id}`}
-                    className="relative block aspect-square overflow-hidden bg-[#E8F1E9] p-3 sm:p-5"
-                  >
-                    {image ? (
-                      <img
-                        src={image}
-                        alt={name}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-[#91A398]">
-                        <Package size={38} strokeWidth={1.3} />
-                      </div>
-                    )}
-
-                    {hasDiscount && (
-                      <span className="absolute right-2 top-2 rounded-md bg-[#278653] px-2 py-1 text-[10px] font-bold text-white sm:text-xs">
-                        خصم
-                      </span>
-                    )}
-
-                    {stock <= 0 && (
-                      <span className="absolute bottom-2 right-2 rounded-md bg-[#526357]/90 px-2 py-1 text-[10px] text-white">
-                        نفد المخزون
-                      </span>
-                    )}
-                  </Link>
-
-                  <div className="flex flex-1 flex-col p-3 sm:p-4">
-                    {product.brand && (
-                      <p className="mb-1.5 truncate text-xs font-medium text-[#278653]">
-                        {product.brand}
-                      </p>
-                    )}
-
-                    <Link href={`/products/${product._id}`}>
-                      <h2 className="line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-[#26382D] transition hover:text-[#278653] sm:text-base">
-                        {name}
-                      </h2>
+                  {/* Image + floating actions */}
+                  <div className="relative aspect-square overflow-hidden bg-[#E8F1E9]">
+                    <Link
+                      href={`/products/${product._id}`}
+                      aria-label={`عرض ${name}`}
+                      className="absolute inset-0"
+                    >
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-[#91A398]">
+                          <Package size={48} strokeWidth={1.3} />
+                        </div>
+                      )}
                     </Link>
 
-                    <div className="mt-3 flex min-h-6 flex-wrap items-center gap-2">
-                      <span className="text-sm font-bold text-[#278653] sm:text-base">
+                    {/* Top icons */}
+                    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between p-2.5">
+                      {/* Favorite */}
+                      <button
+                        type="button"
+                        aria-label={
+                          isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"
+                        }
+                        aria-pressed={isFavorite}
+                        onClick={() => toggleFavorite(product._id)}
+                        className={`pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition duration-200 hover:scale-110 ${
+                          isFavorite
+                            ? "bg-red-500 text-white"
+                            : "bg-white/90 text-[#526357] hover:bg-red-50 hover:text-red-500"
+                        }`}
+                      >
+                        <Heart
+                          size={18}
+                          fill={isFavorite ? "currentColor" : "none"}
+                        />
+                      </button>
+
+                      <div className="flex flex-col gap-2">
+                        {/* Discount */}
+                        {hasDiscount && (
+                          <span className="rounded-full bg-[#278653] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm sm:text-xs">
+                            خصم
+                          </span>
+                        )}
+
+                        {/* Details icon */}
+                        <Link
+                          href={`/products/${product._id}`}
+                          aria-label={`تفاصيل ${name}`}
+                          className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#26382D] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-[#278653] hover:text-white"
+                        >
+                          <Eye size={18} />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Product name appears on hover */}
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="absolute inset-x-0 bottom-0 z-[5] flex min-h-20 items-end bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10 opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                    >
+                      <div className="min-w-0">
+                        {product.brand && (
+                          <p className="mb-1 truncate text-[10px] font-medium text-[#B8E6C5] sm:text-xs">
+                            {product.brand}
+                          </p>
+                        )}
+
+                        <h2 className="line-clamp-2 text-sm font-bold leading-5 text-white sm:text-base">
+                          {name}
+                        </h2>
+                      </div>
+                    </Link>
+
+                    {/* Out of stock */}
+                    {stock <= 0 && (
+                      <div className="pointer-events-none absolute inset-0 z-[6] flex items-center justify-center bg-black/30">
+                        <span className="rounded-full bg-white/95 px-3 py-2 text-xs font-bold text-[#526357]">
+                          نفد المخزون
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product information */}
+                  <div className="flex flex-col p-3 sm:p-4">
+                    {/* Name for touch devices and accessibility */}
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="mb-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-[#26382D] transition hover:text-[#278653] sm:hidden"
+                    >
+                      {name}
+                    </Link>
+
+                    {/* Price */}
+                    <div className="flex min-h-7 flex-wrap items-center gap-2">
+                      <span className="text-sm font-extrabold text-[#278653] sm:text-base">
                         {formatPrice(price)}
                       </span>
 
                       {hasDiscount && (
-                        <span className="text-xs text-[#91A398] line-through">
+                        <span className="text-[11px] text-[#91A398] line-through">
                           {formatPrice(originalPrice)}
                         </span>
                       )}
                     </div>
 
-                    <div className="mt-2 flex items-center justify-between gap-1">
+                    {/* Rating and stock */}
+                    <div className="mt-3 flex items-center justify-between gap-1 border-t border-[#EDF1ED] pt-3">
                       <span className="flex items-center gap-1 text-xs text-[#718075]">
                         <Star
-                          size={13}
-                          className="text-amber-500"
-                          fill="currentColor"
+                          size={14}
+                          className="fill-amber-400 text-amber-400"
                         />
                         {Number(product.rating || 0).toFixed(1)}
                       </span>
 
                       <span
-                        className={`text-[11px] font-medium ${
-                          stock > 0 ? "text-[#278653]" : "text-red-600"
+                        className={`flex items-center gap-1 text-[10px] font-semibold sm:text-xs ${
+                          stock > 0 ? "text-[#278653]" : "text-red-500"
                         }`}
                       >
-                        {stock > 0 ? "متوفر" : "غير متوفر"}
+                        {stock > 0 ? "In Stock" : "Out of Stock"}
+                        <span className="text-amber-500">{stock}</span>
                       </span>
                     </div>
 
-                    <div className="mt-auto pt-4">
-                      <button
-                        type="button"
-                        disabled={stock <= 0 || isAdding}
-                        onClick={() => {
-                          setNotice(null);
-                          addMutation.mutate(product);
-                        }}
-                        className="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#278653] px-2 py-2.5 text-xs font-bold text-white transition hover:bg-[#206B42] disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398] sm:text-sm"
-                      >
-                        {isAdding ? (
-                          <LoaderCircle size={16} className="animate-spin" />
-                        ) : (
-                          <ShoppingCart size={16} />
-                        )}
+                    {/* Icon-only add to cart */}
+                    <button
+                      type="button"
+                      disabled={stock <= 0 || isAdding}
+                      onClick={() => {
+                        setNotice(null);
+                        addMutation.mutate(product);
+                      }}
+                      aria-label={`إضافة ${name} إلى السلة`}
+                      title={
+                        stock <= 0 ? "المنتج غير متوفر" : "إضافة إلى السلة"
+                      }
+                      className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#278653] text-white transition duration-200 hover:bg-[#206B42] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398]"
+                    >
+                      {isAdding ? (
+                        <LoaderCircle size={19} className="animate-spin" />
+                      ) : (
+                        <ShoppingCart size={19} />
+                      )}
 
-                        {stock <= 0
-                          ? "غير متوفر"
-                          : isAdding
-                            ? "جاري الإضافة..."
+                      <span className="text-xs font-bold">
+                        {isAdding
+                          ? "جاري الإضافة..."
+                          : stock <= 0
+                            ? "غير متوفر"
                             : "أضف للسلة"}
-                      </button>
-
-                      <Link
-                        href={`/products/${product._id}`}
-                        className="mt-2 flex min-h-9 items-center justify-center rounded-lg border border-[#DCE6DC] bg-white px-2 text-xs text-[#526357] transition hover:border-[#A7D5B5] hover:bg-[#F3F7F3] hover:text-[#278653]"
-                      >
-                        عرض التفاصيل
-                      </Link>
-                    </div>
+                      </span>
+                    </button>
                   </div>
                 </article>
               );

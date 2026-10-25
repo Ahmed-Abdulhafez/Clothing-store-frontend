@@ -3,8 +3,7 @@ import { AuthProvider } from "@/context/AuthContext";
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavbarWrapper from "@/components/mianPage/navbar/NavbarWrapper";
-
+import NavbarWrapper from "@/components/mianPageNavbar/navbar/NavbarWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,5 +1,5 @@
 import CategoriesSection from "@/components/home/CategoriesSection";
-import Slider from "../components/mianPage/slider/Slider";
+import Slider from "../components/mianPageNavbar/slider/Slider";
 import Link from "next/link";
 import CartHomePage from "@/components/home/CartHomePage";
 
@@ -39,8 +39,8 @@ export default function Home() {
           </div>
 
           {/* هنربط المنتجات الحقيقية بالـ API في الخطوة التالية */}
-          <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
-            <CartHomePage/>
+          <div className="rounded-xl bg-white text-center text-gray-500">
+            <CartHomePage />
           </div>
         </section>
       </div>

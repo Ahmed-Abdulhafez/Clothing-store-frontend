@@ -7,12 +7,7 @@ import { getCategoryById } from "@/services/categoriesService";
 export default function catygorytId() {
   const { id } = useParams();
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
+  const { data, isLoading, isError, error } = useQuery({
     queryKey: ["category", id],
     queryFn: () => getCategoryById(id),
     enabled: !!id,

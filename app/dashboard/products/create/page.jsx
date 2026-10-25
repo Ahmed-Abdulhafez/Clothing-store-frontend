@@ -95,7 +95,7 @@ export default function DashboardCreateProductPage() {
         : Array.isArray(categoriesResponse?.data?.categories)
           ? categoriesResponse.data.categories
           : [];
-          
+
   const createProductMutation = useMutation({
     mutationFn: createProduct,
 

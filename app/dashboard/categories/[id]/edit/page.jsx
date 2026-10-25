@@ -1,13 +1,8 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ImagePlus,
@@ -18,8 +13,6 @@ import {
   X,
 } from "lucide-react";
 import { getCategoryById, updateCategory } from "@/services/categoriesService";
-
-
 
 export default function EditCategoryPage() {
   const { id } = useParams();
@@ -62,8 +55,7 @@ export default function EditCategoryPage() {
   }, [image]);
 
   const updateMutation = useMutation({
-    mutationFn: (updatedCategory) =>
-      updateCategory(id, updatedCategory),
+    mutationFn: (updatedCategory) => updateCategory(id, updatedCategory),
 
     onSuccess: async () => {
       await Promise.all([
@@ -79,14 +71,10 @@ export default function EditCategoryPage() {
     },
 
     onError: (error) => {
-      console.error(
-        "UPDATE CATEGORY ERROR:",
-        error.response?.data || error
-      );
+      console.error("UPDATE CATEGORY ERROR:", error.response?.data || error);
 
       setErrorMessage(
-        error.response?.data?.message ||
-          "حدث خطأ أثناء تحديث التصنيف."
+        error.response?.data?.message || "حدث خطأ أثناء تحديث التصنيف.",
       );
     },
   });
@@ -147,8 +135,7 @@ export default function EditCategoryPage() {
     return (
       <div className="mx-auto mt-10 max-w-2xl rounded-xl border border-red-500/20 bg-[#1e1e1e] p-6 text-center">
         <p className="text-red-400">
-          {error?.response?.data?.message ||
-            "تعذر تحميل بيانات التصنيف."}
+          {error?.response?.data?.message || "تعذر تحميل بيانات التصنيف."}
         </p>
 
         <button
@@ -177,9 +164,7 @@ export default function EditCategoryPage() {
           </button>
 
           <div>
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              تعديل التصنيف
-            </h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">تعديل التصنيف</h1>
 
             <p className="mt-2 text-sm text-gray-400">
               عدّل اسم التصنيف أو استبدل صورته.
@@ -254,9 +239,7 @@ export default function EditCategoryPage() {
                 <div className="flex flex-col items-center py-8 text-gray-500">
                   <ImagePlus size={42} strokeWidth={1.5} />
 
-                  <p className="mt-3 text-sm">
-                    لا توجد صورة لهذا التصنيف
-                  </p>
+                  <p className="mt-3 text-sm">لا توجد صورة لهذا التصنيف</p>
                 </div>
               )}
 
@@ -264,9 +247,7 @@ export default function EditCategoryPage() {
                 <label
                   htmlFor="category-image"
                   className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-600 px-4 py-2.5 text-sm font-medium text-gray-200 transition hover:border-emerald-500 hover:bg-emerald-500/5 ${
-                    isPending
-                      ? "pointer-events-none opacity-50"
-                      : ""
+                    isPending ? "pointer-events-none opacity-50" : ""
                   }`}
                 >
                   <Upload size={17} />
@@ -318,10 +299,7 @@ export default function EditCategoryPage() {
             >
               {isPending ? (
                 <>
-                  <LoaderCircle
-                    size={18}
-                    className="animate-spin"
-                  />
+                  <LoaderCircle size={18} className="animate-spin" />
                   جاري الحفظ...
                 </>
               ) : (

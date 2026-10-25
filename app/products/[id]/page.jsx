@@ -89,7 +89,7 @@ export default function ProductDetailsPage() {
       setMessage("تمت إضافة المنتج إلى السلة بنجاح.");
 
       await queryClient.invalidateQueries({
-        queryKey: ["cart"],
+        queryKey: ["carts"],
       });
     },
 

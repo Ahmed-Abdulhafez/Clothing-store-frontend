@@ -1,8 +1,9 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getUserCart } from "@/services/cartService";
 import {
   Menu,
   X,
@@ -24,6 +25,21 @@ const NAV_LINKS = [
 const Navbar = () => {
   const { user, logout } = useAuth();
 
+const { data } = useQuery({
+  queryKey: ["carts"],
+  queryFn: getUserCart,
+  enabled: !!user,
+});
+
+const cartItems = Array.isArray(data?.cart?.cartItems)
+  ? data.cart.cartItems
+  : [];
+
+const cartCount = cartItems.reduce(
+  (total, item) => total + (Number(item.quantity) || 0),
+  0
+);
+
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const isAdmin = user?.role?.toLowerCase() === "admin";
@@ -40,9 +56,7 @@ const Navbar = () => {
 
   const linkClass = (href) =>
     `text-sm font-medium transition-colors duration-200 ${
-      pathname === href
-        ? "text-lime-600"
-        : "text-gray-600 hover:text-lime-600"
+      pathname === href ? "text-lime-600" : "text-gray-600 hover:text-lime-600"
     }`;
 
   return (
@@ -102,7 +116,7 @@ const Navbar = () => {
             <ShoppingCart size={21} strokeWidth={1.8} />
 
             <span className="absolute -right-0.5 -top-0.5 flex h-[17px] min-w-[17px] items-center justify-center rounded-full bg-lime-700 px-1 text-[10px] font-semibold text-white">
-              3
+              {cartCount}
             </span>
           </Link>
 

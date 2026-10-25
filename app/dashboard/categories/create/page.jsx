@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -42,10 +41,7 @@ export default function DashboardCreateCategoryPage() {
     },
 
     onError: (error) => {
-      console.error(
-        "CREATE CATEGORY ERROR:",
-        error.response?.data || error,
-      );
+      console.error("CREATE CATEGORY ERROR:", error.response?.data || error);
 
       setErrorMessage(
         error.response?.data?.message ||
@@ -125,20 +121,15 @@ export default function DashboardCreateCategoryPage() {
   return (
     <main className="min-h-screen bg-[#171717] p-4 text-gray-100 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-4xl space-y-7">
-
         {/* Header */}
         <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2 text-emerald-400">
               <Tag size={19} />
-              <span className="text-sm font-medium">
-                Store Management
-              </span>
+              <span className="text-sm font-medium">Store Management</span>
             </div>
 
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              إنشاء تصنيف جديد
-            </h1>
+            <h1 className="text-2xl font-bold sm:text-3xl">إنشاء تصنيف جديد</h1>
 
             <p className="mt-2 text-sm text-gray-400">
               أضف اسم التصنيف وصورته إلى متجرك.
@@ -161,9 +152,7 @@ export default function DashboardCreateCategoryPage() {
         >
           {/* Form Header */}
           <div className="border-b border-gray-800 px-5 py-5 sm:px-7">
-            <h2 className="font-semibold text-gray-100">
-              بيانات التصنيف
-            </h2>
+            <h2 className="font-semibold text-gray-100">بيانات التصنيف</h2>
 
             <p className="mt-1 text-sm text-gray-400">
               أدخل البيانات المطلوبة ثم احفظ التصنيف.
@@ -171,7 +160,6 @@ export default function DashboardCreateCategoryPage() {
           </div>
 
           <div className="space-y-7 p-5 sm:p-7">
-
             {/* Category Name */}
             <div className="space-y-2">
               <label
@@ -305,10 +293,7 @@ export default function DashboardCreateCategoryPage() {
                 role="alert"
                 className="flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300"
               >
-                <AlertCircle
-                  size={19}
-                  className="mt-0.5 shrink-0"
-                />
+                <AlertCircle size={19} className="mt-0.5 shrink-0" />
 
                 <p>{errorMessage}</p>
               </div>
@@ -339,10 +324,7 @@ export default function DashboardCreateCategoryPage() {
             >
               {isPending ? (
                 <>
-                  <LoaderCircle
-                    size={18}
-                    className="animate-spin"
-                  />
+                  <LoaderCircle size={18} className="animate-spin" />
                   جاري إنشاء التصنيف...
                 </>
               ) : (
