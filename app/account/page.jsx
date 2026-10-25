@@ -1,7 +1,9 @@
-import React from 'react'
 
-export const page = () => {
+export default function AccountPage() {
   return (
-    <div>page</div>
-  )
+    <div>
+      <h1>My Account</h1>
+      {/* محتوى الصفحة هنا */}
+    </div>
+  );
 }
