@@ -1,7 +1,5 @@
-export default function loading () {
-    return (
-        <div>
-            loading....
-        </div>
-    )
+import Loading from "@/components/Loading";
+
+export default function LoadingPage() {
+  return <Loading />;
 }

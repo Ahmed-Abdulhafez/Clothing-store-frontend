@@ -75,29 +75,30 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         {/* Sidebar Header */}
         <div className="flex h-20 items-center justify-between border-b border-[#2f2f2f] px-4">
           {/* Logo */}
-          <div
-            className={`
+          <Link href="/">
+            <div
+              className={`
               flex items-center gap-3 overflow-hidden
               transition-all duration-300
               ${isOpen ? "w-full" : "w-10"}
             `}
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-lg font-bold text-black">
-              E
-            </div>
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-lg font-bold text-black">
+                E
+              </div>
 
-            <div
-              className={`
+              <div
+                className={`
                 whitespace-nowrap transition-all duration-200
                 ${isOpen ? "opacity-100" : "w-0 opacity-0"}
               `}
-            >
-              <h2 className="text-sm font-semibold text-white">Evo Store</h2>
+              >
+                <h2 className="text-sm font-semibold text-white">Evo Store</h2>
 
-              <p className="text-xs text-gray-500">Admin Panel</p>
+                <p className="text-xs text-gray-500">Admin Panel</p>
+              </div>
             </div>
-          </div>
-
+          </Link>
           {/* Desktop Collapse Button */}
           <button
             type="button"
