@@ -4,9 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Search,
   ShoppingCart,
-  SlidersHorizontal,
   Package,
   LoaderCircle,
   RefreshCw,
@@ -150,17 +148,23 @@ export default function CartHomePage() {
     );
   };
 
+  // Loading State
   if (isLoading) {
     return (
-      <main
-        dir="rtl"
-        className="flex min-h-[60vh] items-center justify-center bg-[#F3F7F3] text-[#526357]"
-      >
-        <div className="flex items-center gap-3">
-          <LoaderCircle className="animate-spin text-[#278653]" size={24} />
-          <p>جاري تحميل المنتجات...</p>
-        </div>
-      </main>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div
+            key={index}
+            className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 bg-white p-3"
+          >
+            <div className="aspect-[4/5] rounded-xl bg-gray-200" />
+
+            <div className="mt-4 h-4 w-3/4 rounded bg-gray-200" />
+            <div className="mt-3 h-3 w-1/2 rounded bg-gray-100" />
+            <div className="mt-4 h-5 w-2/5 rounded bg-gray-200" />
+          </div>
+        ))}
+      </div>
     );
   }
 

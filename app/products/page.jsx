@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMemo, useState } from "react";
@@ -14,6 +15,10 @@ import {
   X,
   Heart,
   Eye,
+  ArrowUpDown,
+  Sparkles,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 
 import { getProducts } from "@/services/productService";
@@ -30,12 +35,8 @@ function normalizeProducts(response) {
   if (Array.isArray(response)) return response;
   if (Array.isArray(response?.products)) return response.products;
   if (Array.isArray(response?.data)) return response.data;
-  if (Array.isArray(response?.data?.products)) {
-    return response.data.products;
-  }
-  if (Array.isArray(response?.data?.data)) {
-    return response.data.data;
-  }
+  if (Array.isArray(response?.data?.products)) return response.data.products;
+  if (Array.isArray(response?.data?.data)) return response.data.data;
 
   return [];
 }
@@ -67,20 +68,20 @@ export default function ProductsPage() {
   const [favorites, setFavorites] = useState(() => new Set());
 
   const toggleFavorite = (productId) => {
-    setFavorites((currentFavorites) => {
-      const nextFavorites = new Set(currentFavorites);
+    setFavorites((current) => {
+      const updated = new Set(current);
 
-      if (nextFavorites.has(productId)) {
-        nextFavorites.delete(productId);
+      if (updated.has(productId)) {
+        updated.delete(productId);
       } else {
-        nextFavorites.add(productId);
+        updated.add(productId);
       }
 
-      return nextFavorites;
+      return updated;
     });
   };
 
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
   });
@@ -91,7 +92,9 @@ export default function ProductsPage() {
     const term = search.trim().toLowerCase();
 
     const result = products.filter((product) => {
-      const name = String(product.title || product.name || "").toLowerCase();
+      const name = String(
+        product.title || product.name || "",
+      ).toLowerCase();
 
       const brand = String(product.brand || "").toLowerCase();
       const inStock = Number(product.stock) > 0;
@@ -119,7 +122,7 @@ export default function ProductsPage() {
       result.sort((a, b) =>
         String(a.title || a.name || "").localeCompare(
           String(b.title || b.name || ""),
-          "ar",
+          "en",
         ),
       );
     }
@@ -137,7 +140,7 @@ export default function ProductsPage() {
     onSuccess: async () => {
       setNotice({
         type: "success",
-        text: "تمت إضافة المنتج إلى السلة بنجاح.",
+        text: "Product added to your cart successfully.",
       });
 
       await queryClient.invalidateQueries({
@@ -150,192 +153,298 @@ export default function ProductsPage() {
         type: "error",
         text:
           error.response?.data?.message ||
-          "تعذرت إضافة المنتج إلى السلة. حاول مرة أخرى.",
+          "Unable to add this product to your cart. Please try again.",
       });
     },
   });
 
+  const resetFilters = () => {
+    setSearch("");
+    setSort("default");
+    setAvailability("all");
+  };
+
+  // Loading state
   if (isLoading) {
     return (
       <main
-        dir="rtl"
-        className="flex min-h-[60vh] items-center justify-center bg-[#F3F7F3] text-[#526357]"
+        dir="ltr"
+        className="flex min-h-[70vh] items-center justify-center bg-[#F5F8F5] px-4 text-[#26382D]"
       >
-        <div className="flex items-center gap-3">
-          <LoaderCircle className="animate-spin text-[#278653]" size={24} />
-          <p>جاري تحميل المنتجات...</p>
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
+            <LoaderCircle
+              size={30}
+              className="animate-spin text-[#278653]"
+            />
+          </div>
+
+          <div className="text-center">
+            <p className="font-semibold">Loading Products</p>
+            <p className="mt-1 text-sm text-[#849187]">
+              Please wait while we prepare your store.
+            </p>
+          </div>
         </div>
       </main>
     );
   }
 
+  // Error state
   if (isError) {
     return (
       <main
-        dir="rtl"
-        className="flex min-h-[60vh] flex-col items-center justify-center bg-[#F3F7F3] px-4 text-center text-[#26382D]"
+        dir="ltr"
+        className="flex min-h-[70vh] flex-col items-center justify-center bg-[#F5F8F5] px-4 text-center text-[#26382D]"
       >
-        <Package size={38} className="mb-4 text-[#91A398]" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-[#91A398] shadow-sm">
+          <Package size={32} />
+        </div>
 
-        <h1 className="text-xl font-bold">تعذر تحميل المنتجات</h1>
+        <h1 className="mt-5 text-xl font-bold">Unable to Load Products</h1>
 
-        <p className="mt-2 text-sm text-[#718075]">
+        <p className="mt-2 max-w-md text-sm leading-6 text-[#849187]">
           {error?.response?.data?.message ||
             error?.message ||
-            "حدث خطأ أثناء الاتصال بالخادم."}
+            "Something went wrong while connecting to the server."}
         </p>
 
         <button
           type="button"
           onClick={() => refetch()}
-          className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#278653] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#206B42]"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#278653] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#278653]/20 transition hover:-translate-y-0.5 hover:bg-[#206B42]"
         >
           <RefreshCw size={16} />
-          إعادة المحاولة
+          Try Again
         </button>
       </main>
     );
   }
 
   return (
-    <main dir="rtl" className="pt-20 min-h-screen bg-[#F3F7F3] text-[#26382D]">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <header className="mb-7">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="text-2xl font-bold text-[#26382D] sm:text-3xl">
-              Our Products
-            </h1>
+    <main
+      dir="ltr"
+      className="min-h-screen bg-[#F5F8F5] pt-24 pb-16 text-[#26382D]"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-            <p className="text-xl font-black tracking-wider text-[#278653] sm:text-2xl">
-              EVO STORE
-            </p>
-          </div>
-
-          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        {/* Page Header */}
+        <header className="mb-8">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
-              <p className="mt-2 text-sm text-[#718075]">
-                Discover our products and find what suits you best
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#DCEBDD] bg-white px-3 py-1.5">
+                <span className="h-2 w-2 rounded-full bg-[#278653]" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#278653]">
+                  EVO STORE
+                </span>
+              </div>
+
+              <h1 className="text-3xl font-extrabold tracking-tight text-[#26382D] sm:text-4xl lg:text-5xl">
+                Our Products
+              </h1>
+
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#849187] sm:text-base">
+                Discover our collection and find the perfect products for your
+                style.
               </p>
             </div>
 
-            <p className="text-x1 text-amber-700 font-black tracking-wider">
-              <span className="text-x1 text-[#278653]">{filteredProducts.length}</span> Item
-            </p>
+            <div className="flex items-center gap-2 self-start rounded-2xl border border-[#E3EBE3] bg-white px-4 py-3 shadow-sm sm:self-auto">
+              <Package size={19} className="text-[#278653]" />
+
+              <div>
+                <p className="text-lg font-extrabold leading-none text-[#26382D]">
+                  {filteredProducts.length}
+                </p>
+                <p className="mt-1 text-[11px] text-[#849187]">
+                  Products Found
+                </p>
+              </div>
+            </div>
           </div>
         </header>
 
-        {/* Search and filters */}
-        <section className="mb-7 rounded-xl border border-[#E1E9E1] bg-white p-3 shadow-sm sm:p-4">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_190px_170px]">
+        {/* Search and Filters */}
+        <section className="mb-8 rounded-2xl border border-[#E3EBE3] bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-4 flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#EAF4EC] text-[#278653]">
+              <SlidersHorizontal size={17} />
+            </div>
+
+            <div>
+              <h2 className="text-sm font-bold text-[#26382D]">
+                Search & Filters
+              </h2>
+              <p className="text-xs text-[#9AA79D]">
+                Find exactly what you are looking for.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_210px_190px]">
+            {/* Search */}
             <div className="relative">
               <Search
                 size={18}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#91A398]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#91A398]"
               />
 
               <input
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="ابحث عن منتج أو ماركة..."
-                className="h-11 w-full rounded-lg border border-[#DCE6DC] bg-[#F8FAF8] pr-10 pl-10 text-sm text-[#26382D] outline-none transition placeholder:text-[#9AA79D] focus:border-[#278653] focus:ring-2 focus:ring-[#278653]/10"
+                placeholder="Search products or brands..."
+                aria-label="Search products"
+                className="h-12 w-full rounded-xl border border-[#E3EBE3] bg-[#F8FAF8] pl-11 pr-11 text-sm text-[#26382D] outline-none transition placeholder:text-[#A2AEA4] focus:border-[#278653] focus:bg-white focus:ring-4 focus:ring-[#278653]/10"
               />
 
               {search && (
                 <button
                   type="button"
                   onClick={() => setSearch("")}
-                  aria-label="مسح البحث"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-[#91A398] transition hover:text-[#278653]"
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-[#91A398] transition hover:bg-[#EAF4EC] hover:text-[#278653]"
                 >
                   <X size={16} />
                 </button>
               )}
             </div>
 
+            {/* Sorting */}
             <div className="relative">
-              <SlidersHorizontal
+              <ArrowUpDown
                 size={16}
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#718075]"
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#849187]"
               />
 
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
-                className="h-11 w-full appearance-none rounded-lg border border-[#DCE6DC] bg-[#F8FAF8] py-2 pl-3 pr-9 text-sm text-[#26382D] outline-none transition focus:border-[#278653]"
+                aria-label="Sort products"
+                className="h-12 w-full appearance-none rounded-xl border border-[#E3EBE3] bg-[#F8FAF8] pl-10 pr-4 text-sm text-[#526357] outline-none transition focus:border-[#278653] focus:ring-4 focus:ring-[#278653]/10"
               >
-                <option value="default">الترتيب الافتراضي</option>
-                <option value="price-low">السعر: الأقل أولًا</option>
-                <option value="price-high">السعر: الأعلى أولًا</option>
-                <option value="name">الاسم: أبجديًا</option>
+                <option value="default">Default Sorting</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name: A to Z</option>
               </select>
             </div>
 
+            {/* Availability */}
             <select
               value={availability}
               onChange={(event) => setAvailability(event.target.value)}
-              className="h-11 w-full rounded-lg border border-[#DCE6DC] bg-[#F8FAF8] px-3 text-sm text-[#26382D] outline-none transition focus:border-[#278653]"
+              aria-label="Filter by availability"
+              className="h-12 w-full rounded-xl border border-[#E3EBE3] bg-[#F8FAF8] px-4 text-sm text-[#526357] outline-none transition focus:border-[#278653] focus:ring-4 focus:ring-[#278653]/10"
             >
-              <option value="all">كل المنتجات</option>
-              <option value="available">المتاحة فقط</option>
-              <option value="unavailable">غير المتاحة</option>
+              <option value="all">All Products</option>
+              <option value="available">In Stock</option>
+              <option value="unavailable">Out of Stock</option>
             </select>
           </div>
+
+          {(search || sort !== "default" || availability !== "all") && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[#EDF1ED] pt-4">
+              <p className="text-xs text-[#849187]">
+                Showing {filteredProducts.length} matching products
+              </p>
+
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#278653] transition hover:text-[#206B42]"
+              >
+                <RefreshCw size={13} />
+                Clear All Filters
+              </button>
+            </div>
+          )}
         </section>
 
-        {/* Add to cart feedback */}
+        {/* Notification */}
         {notice && (
           <div
             role="status"
-            className={`mb-5 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm ${
+            className={`mb-6 flex items-start justify-between gap-3 rounded-xl border p-4 text-sm ${
               notice.type === "success"
                 ? "border-[#C8E5D0] bg-[#EDF7EF] text-[#206B42]"
                 : "border-red-200 bg-red-50 text-red-700"
             }`}
           >
-            <p>{notice.text}</p>
+            <div className="flex items-start gap-2.5">
+              {notice.type === "success" ? (
+                <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
+              ) : (
+                <AlertCircle size={19} className="mt-0.5 shrink-0" />
+              )}
+
+              <p className="leading-6">{notice.text}</p>
+            </div>
 
             <button
               type="button"
               onClick={() => setNotice(null)}
-              aria-label="إغلاق الرسالة"
-              className="shrink-0 transition hover:opacity-70"
+              aria-label="Close notification"
+              className="shrink-0 rounded-lg p-1 transition hover:bg-black/5"
             >
               <X size={17} />
             </button>
           </div>
         )}
 
-        {/* Product list */}
-        {filteredProducts.length === 0 ? (
-          <section className="rounded-xl border border-[#E1E9E1] bg-white px-4 py-16 text-center shadow-sm">
-            <Package size={36} className="mx-auto mb-3 text-[#91A398]" />
+        {/* Section Title */}
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles size={18} className="text-[#278653]" />
+              <h2 className="text-lg font-bold text-[#26382D] sm:text-xl">
+                Explore Products
+              </h2>
+            </div>
 
-            <h2 className="font-semibold text-[#26382D]">
-              لا توجد منتجات مطابقة
+            <p className="mt-1 text-xs text-[#849187]">
+              Carefully selected products for you.
+            </p>
+          </div>
+
+          {isFetching && (
+            <LoaderCircle
+              size={18}
+              className="animate-spin text-[#278653]"
+            />
+          )}
+        </div>
+
+        {/* Empty State */}
+        {filteredProducts.length === 0 ? (
+          <section className="rounded-3xl border border-[#E3EBE3] bg-white px-5 py-16 text-center shadow-sm">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-[#EAF4EC] text-[#91A398]">
+              <Package size={38} strokeWidth={1.5} />
+            </div>
+
+            <h2 className="mt-5 text-xl font-bold text-[#26382D]">
+              No Products Found
             </h2>
 
-            <p className="mt-2 text-sm text-[#718075]">
-              جرّب تغيير البحث أو الفلاتر.
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-[#849187]">
+              We couldn't find any products matching your search. Try changing
+              your search term or filters.
             </p>
 
             <button
               type="button"
-              onClick={() => {
-                setSearch("");
-                setSort("default");
-                setAvailability("all");
-              }}
-              className="mt-4 text-sm font-medium text-[#278653] transition hover:text-[#206B42]"
+              onClick={resetFilters}
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#278653] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[#278653]/20 transition hover:-translate-y-0.5 hover:bg-[#206B42]"
             >
-              إعادة ضبط البحث
+              <RefreshCw size={16} />
+              Reset Filters
             </button>
           </section>
         ) : (
-          <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+          /* Products Grid */
+          <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:gap-6">
             {filteredProducts.map((product) => {
-              const name = product.title || product.name || "منتج";
+              const name = product.title || product.name || "Product";
               const image = getImage(product);
               const price = getPrice(product);
               const originalPrice = Number(product.price) || 0;
@@ -345,18 +454,19 @@ export default function ProductsPage() {
               const isAdding =
                 addMutation.isPending &&
                 addMutation.variables?._id === product._id;
+
               const isFavorite = favorites.has(product._id);
 
               return (
                 <article
                   key={product._id}
-                  className="group min-w-0 overflow-hidden rounded-2xl border border-[#E1E9E1] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#B5D7BE] hover:shadow-xl hover:shadow-[#26382D]/10"
+                  className="group min-w-0 overflow-hidden rounded-2xl border border-[#E3EBE3] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#B9D8C0] hover:shadow-xl hover:shadow-[#26382D]/10 sm:rounded-3xl"
                 >
-                  {/* Image + floating actions */}
-                  <div className="relative aspect-square overflow-hidden bg-[#E8F1E9]">
+                  {/* Product Image */}
+                  <div className="relative aspect-[4/4.5] overflow-hidden bg-[#EAF1EA]">
                     <Link
                       href={`/products/${product._id}`}
-                      aria-label={`عرض ${name}`}
+                      aria-label={`View ${name}`}
                       className="absolute inset-0"
                     >
                       {image ? (
@@ -364,7 +474,7 @@ export default function ProductsPage() {
                           src={image}
                           alt={name}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                         />
                       ) : (
                         <div className="flex h-full items-center justify-center text-[#91A398]">
@@ -373,84 +483,91 @@ export default function ProductsPage() {
                       )}
                     </Link>
 
-                    {/* Top icons */}
-                    <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between p-2.5">
-                      {/* Favorite */}
-                      <button
-                        type="button"
-                        aria-label={
-                          isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"
-                        }
-                        aria-pressed={isFavorite}
-                        onClick={() => toggleFavorite(product._id)}
-                        className={`pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition duration-200 hover:scale-110 ${
-                          isFavorite
-                            ? "bg-red-500 text-white"
-                            : "bg-white/90 text-[#526357] hover:bg-red-50 hover:text-red-500"
-                        }`}
-                      >
-                        <Heart
-                          size={18}
-                          fill={isFavorite ? "currentColor" : "none"}
-                        />
-                      </button>
+                    {/* Image Gradient */}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/30 to-transparent opacity-70" />
 
-                      <div className="flex flex-col gap-2">
-                        {/* Discount */}
-                        {hasDiscount && (
-                          <span className="rounded-full bg-[#278653] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm sm:text-xs">
-                            خصم
-                          </span>
-                        )}
+                    {/* Favorite Button */}
+                    <button
+                      type="button"
+                      aria-label={
+                        isFavorite
+                          ? "Remove from favorites"
+                          : "Add to favorites"
+                      }
+                      aria-pressed={isFavorite}
+                      onClick={() => toggleFavorite(product._id)}
+                      className={`absolute left-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition duration-200 hover:scale-110 sm:h-10 sm:w-10 ${
+                        isFavorite
+                          ? "bg-red-500 text-white"
+                          : "bg-white/95 text-[#526357] hover:bg-red-50 hover:text-red-500"
+                      }`}
+                    >
+                      <Heart
+                        size={18}
+                        fill={isFavorite ? "currentColor" : "none"}
+                      />
+                    </button>
 
-                        {/* Details icon */}
-                        <Link
-                          href={`/products/${product._id}`}
-                          aria-label={`تفاصيل ${name}`}
-                          className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#26382D] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-[#278653] hover:text-white"
-                        >
-                          <Eye size={18} />
-                        </Link>
-                      </div>
-                    </div>
+                    {/* Discount Badge */}
+                    {hasDiscount && (
+                      <span className="absolute right-3 top-3 z-10 rounded-full bg-[#278653] px-2.5 py-1.5 text-[10px] font-bold text-white shadow-md sm:text-xs">
+                        SALE
+                      </span>
+                    )}
 
-                    {/* Product name appears on hover */}
+                    {/* Quick View */}
                     <Link
                       href={`/products/${product._id}`}
-                      className="absolute inset-x-0 bottom-0 z-[5] flex min-h-20 items-end bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10 opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                      aria-label={`View details of ${name}`}
+                      className="absolute bottom-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#26382D] shadow-md backdrop-blur-md transition duration-200 hover:scale-110 hover:bg-[#278653] hover:text-white"
+                    >
+                      <Eye size={17} />
+                    </Link>
+
+                    {/* Out of Stock Overlay */}
+                    {stock <= 0 && (
+                      <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center bg-black/35">
+                        <span className="rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-[#526357] shadow-lg">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Desktop Product Name Overlay */}
+                    <Link
+                      href={`/products/${product._id}`}
+                      className="absolute inset-x-0 bottom-0 z-[6] hidden min-h-24 items-end bg-gradient-to-t from-black/85 via-black/40 to-transparent px-4 pb-4 pt-10 opacity-0 transition-opacity duration-300 sm:flex sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
                     >
                       <div className="min-w-0">
                         {product.brand && (
-                          <p className="mb-1 truncate text-[10px] font-medium text-[#B8E6C5] sm:text-xs">
+                          <p className="mb-1 truncate text-[10px] font-semibold uppercase tracking-wider text-[#B8E6C5]">
                             {product.brand}
                           </p>
                         )}
 
-                        <h2 className="line-clamp-2 text-sm font-bold leading-5 text-white sm:text-base">
+                        <h3 className="line-clamp-2 text-sm font-bold leading-5 text-white">
                           {name}
-                        </h2>
+                        </h3>
                       </div>
                     </Link>
-
-                    {/* Out of stock */}
-                    {stock <= 0 && (
-                      <div className="pointer-events-none absolute inset-0 z-[6] flex items-center justify-center bg-black/30">
-                        <span className="rounded-full bg-white/95 px-3 py-2 text-xs font-bold text-[#526357]">
-                          نفد المخزون
-                        </span>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Product information */}
+                  {/* Product Details */}
                   <div className="flex flex-col p-3 sm:p-4">
-                    {/* Name for touch devices and accessibility */}
+                    {/* Product Name */}
                     <Link
                       href={`/products/${product._id}`}
-                      className="mb-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-[#26382D] transition hover:text-[#278653] sm:hidden"
+                      className="mb-2 line-clamp-2 min-h-10 text-xs font-bold leading-5 text-[#26382D] transition hover:text-[#278653] sm:hidden"
                     >
                       {name}
                     </Link>
+
+                    {/* Brand */}
+                    {product.brand && (
+                      <p className="mb-2 hidden truncate text-[10px] font-medium uppercase tracking-wider text-[#9AA79D] sm:block">
+                        {product.brand}
+                      </p>
+                    )}
 
                     {/* Price */}
                     <div className="flex min-h-7 flex-wrap items-center gap-2">
@@ -459,15 +576,15 @@ export default function ProductsPage() {
                       </span>
 
                       {hasDiscount && (
-                        <span className="text-[11px] text-[#91A398] line-through">
+                        <span className="text-[10px] text-[#A3AEA5] line-through sm:text-xs">
                           {formatPrice(originalPrice)}
                         </span>
                       )}
                     </div>
 
-                    {/* Rating and stock */}
+                    {/* Rating and Stock */}
                     <div className="mt-3 flex items-center justify-between gap-1 border-t border-[#EDF1ED] pt-3">
-                      <span className="flex items-center gap-1 text-xs text-[#718075]">
+                      <span className="flex items-center gap-1 text-[11px] font-medium text-[#718075] sm:text-xs">
                         <Star
                           size={14}
                           className="fill-amber-400 text-amber-400"
@@ -480,12 +597,16 @@ export default function ProductsPage() {
                           stock > 0 ? "text-[#278653]" : "text-red-500"
                         }`}
                       >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            stock > 0 ? "bg-[#278653]" : "bg-red-500"
+                          }`}
+                        />
                         {stock > 0 ? "In Stock" : "Out of Stock"}
-                        <span className="text-amber-500">{stock}</span>
                       </span>
                     </div>
 
-                    {/* Icon-only add to cart */}
+                    {/* Add to Cart */}
                     <button
                       type="button"
                       disabled={stock <= 0 || isAdding}
@@ -493,24 +614,26 @@ export default function ProductsPage() {
                         setNotice(null);
                         addMutation.mutate(product);
                       }}
-                      aria-label={`إضافة ${name} إلى السلة`}
+                      aria-label={`Add ${name} to cart`}
                       title={
-                        stock <= 0 ? "المنتج غير متوفر" : "إضافة إلى السلة"
+                        stock <= 0
+                          ? "Product unavailable"
+                          : "Add to cart"
                       }
-                      className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#278653] text-white transition duration-200 hover:bg-[#206B42] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398]"
+                      className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#278653] text-white shadow-md shadow-[#278653]/10 transition duration-200 hover:-translate-y-0.5 hover:bg-[#206B42] hover:shadow-lg hover:shadow-[#278653]/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398] disabled:shadow-none"
                     >
                       {isAdding ? (
-                        <LoaderCircle size={19} className="animate-spin" />
+                        <LoaderCircle size={18} className="animate-spin" />
                       ) : (
-                        <ShoppingCart size={19} />
+                        <ShoppingCart size={18} />
                       )}
 
                       <span className="text-xs font-bold">
                         {isAdding
-                          ? "جاري الإضافة..."
+                          ? "Adding..."
                           : stock <= 0
-                            ? "غير متوفر"
-                            : "أضف للسلة"}
+                            ? "Unavailable"
+                            : "Add to Cart"}
                       </span>
                     </button>
                   </div>
@@ -518,6 +641,22 @@ export default function ProductsPage() {
               );
             })}
           </section>
+        )}
+
+        {/* Bottom Note */}
+        {filteredProducts.length > 0 && (
+          <div className="mt-10 flex flex-col items-center justify-center gap-2 border-t border-[#E3EBE3] pt-7 text-center">
+            <div className="flex items-center gap-2 text-[#278653]">
+              <Sparkles size={15} />
+              <span className="text-xs font-bold uppercase tracking-widest">
+                EVO STORE
+              </span>
+            </div>
+
+            <p className="text-xs text-[#9AA79D]">
+              Quality products. Better shopping experience.
+            </p>
+          </div>
         )}
       </div>
     </main>
