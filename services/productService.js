@@ -1,9 +1,11 @@
 import api from "@/lib/axios";
 
 // get all products
-export async function getProducts() {
+export async function getProducts(params = {}) {
   try {
-    const res = await api.get("/products");
+    const res = await api.get("/products", {
+      params,
+    });
 
     return res.data.data;
   } catch (error) {
@@ -38,7 +40,10 @@ export async function createProduct(productData) {
     formData.append("stock", productData.stock || 0);
     formData.append("category", productData.category || "");
     formData.append("isFeatured", productData.isFeatured || false);
-    formData.append("showInProductSlider", productData.showInProductSlider || false);
+    formData.append(
+      "showInProductSlider",
+      productData.showInProductSlider || false,
+    );
     formData.append("rating", productData.rating || 0);
     formData.append("numReviews", productData.numReviews || 0);
 

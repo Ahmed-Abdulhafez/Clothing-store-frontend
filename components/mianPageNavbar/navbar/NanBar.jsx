@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
+import SearchBar from "./SearchBar";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -96,15 +97,8 @@ const Navbar = () => {
         {/* Desktop Actions */}
         <div className="hidden items-center gap-4 sm:flex">
           {/* Search */}
-          <div className="hidden items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3.5 transition focus-within:border-lime-500 focus-within:bg-white lg:flex">
-            <Search size={17} className="shrink-0 text-gray-400" />
-
-            <input
-              type="search"
-              placeholder="Search products..."
-              aria-label="Search products"
-              className="w-36 bg-transparent py-2 text-sm text-gray-700 outline-none placeholder:text-gray-400 xl:w-44"
-            />
+          <div >
+            <SearchBar />
           </div>
 
           {/* Shopping Cart */}

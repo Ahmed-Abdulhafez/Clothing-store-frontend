@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -86,6 +87,7 @@ function LoadingCart() {
 }
 
 export default function CartPage() {
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -213,30 +215,23 @@ export default function CartPage() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">
                 Cart Items
-                <span className="ml-2 text-sm font-normal text-gray-400">
+                <span className="ml-2 text-sm font-normal text-emerald-400">
                   ({items.length})
                 </span>
               </h2>
 
               <button
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Are you sure you want to clear your entire cart?",
-                    )
-                  ) {
-                    clearCartMutation.mutate();
-                  }
-                }}
-                disabled={isUpdating}
-                className="inline-flex items-center gap-2 text-sm text-red-400 transition hover:text-red-300 disabled:opacity-50"
+                type="button"
+                onClick={() => setShowClearConfirm(true)}
+                disabled={isUpdating || clearCartMutation.isPending}
+                className="group inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/5 px-4 py-2.5 text-sm font-semibold text-emerald-400 shadow-sm transition-all duration-300 hover:border-emerald-400 hover:bg-emerald-400 hover:text-[#171717] hover:shadow-lg hover:shadow-emerald-400/10 active:scale-95 disabled:pointer-events-none disabled:opacity-50"
               >
-                {clearCartMutation.isPending ? (
-                  <LoaderCircle size={16} className="animate-spin" />
-                ) : (
-                  <Trash2 size={16} />
-                )}
-                Clear Cart
+                <Trash2
+                  size={17}
+                  className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-8deg]"
+                />
+
+                <span>Clear Cart</span>
               </button>
             </div>
 
@@ -418,6 +413,83 @@ export default function CartPage() {
           </aside>
         </div>
       </div>
+
+      {showClearConfirm && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (
+              event.target === event.currentTarget &&
+              !clearCartMutation.isPending
+            ) {
+              setShowClearConfirm(false);
+            }
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="clear-cart-title"
+            className="w-full max-w-sm animate-in fade-in zoom-in-95 rounded-2xl border border-emerald-500/20 bg-[#1e1e1e] p-6 text-white shadow-2xl duration-200"
+          >
+            {/* Icon */}
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-400/10">
+              <Trash2 size={27} className="text-emerald-400" />
+            </div>
+
+            {/* Content */}
+            <div className="text-center">
+              <h3
+                id="clear-cart-title"
+                className="text-xl font-bold text-emerald-400"
+              >
+                Clear Your Cart?
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-gray-400">
+                Are you sure you want to remove all items from your cart? This
+                action cannot be undone.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-7 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                disabled={clearCartMutation.isPending}
+                className="flex-1 rounded-xl border border-gray-700 bg-[#252525] px-4 py-3 text-sm font-semibold text-gray-300 transition-all duration-300 hover:border-gray-500 hover:bg-[#303030] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  clearCartMutation.mutate(undefined, {
+                    onSuccess: () => setShowClearConfirm(false),
+                  });
+                }}
+                disabled={clearCartMutation.isPending}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-400 px-4 py-3 text-sm font-bold text-[#171717] shadow-lg shadow-emerald-400/10 transition-all duration-300 hover:bg-emerald-300 hover:shadow-emerald-400/20 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {clearCartMutation.isPending ? (
+                  <>
+                    <LoaderCircle size={16} className="animate-spin" />
+                    Clearing...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={16} />
+                    Yes, Clear
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

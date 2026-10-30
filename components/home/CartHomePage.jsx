@@ -391,19 +391,6 @@ export default function CartHomePage() {
                       {name}
                     </Link>
 
-                    {/* Price */}
-                    <div className="flex min-h-7 flex-wrap items-center gap-2">
-                      <span className="text-sm font-extrabold text-[#278653] sm:text-base">
-                        {formatPrice(price)}
-                      </span>
-
-                      {hasDiscount && (
-                        <span className="text-[11px] text-[#91A398] line-through">
-                          {formatPrice(originalPrice)}
-                        </span>
-                      )}
-                    </div>
-
                     {/* Rating and stock */}
                     <div className="mt-3 flex items-center justify-between gap-1 border-t border-[#EDF1ED] pt-3">
                       <span className="flex items-center gap-1 text-xs text-[#718075]">
@@ -425,34 +412,54 @@ export default function CartHomePage() {
                       </span>
                     </div>
 
-                    {/* Icon-only add to cart */}
-                    <button
-                      type="button"
-                      disabled={stock <= 0 || isAdding}
-                      onClick={() => {
-                        setNotice(null);
-                        addMutation.mutate(product);
-                      }}
-                      aria-label={`إضافة ${name} إلى السلة`}
-                      title={
-                        stock <= 0 ? "المنتج غير متوفر" : "إضافة إلى السلة"
-                      }
-                      className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#278653] text-white transition duration-200 hover:bg-[#206B42] active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398]"
-                    >
-                      {isAdding ? (
-                        <LoaderCircle size={19} className="animate-spin" />
-                      ) : (
-                        <ShoppingCart size={19} />
-                      )}
+                    {/* Price */}
+                    <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-2">
+                      {/* Icon-only Add to Cart */}
+                      <button
+                        type="button"
+                        disabled={stock <= 0 || isAdding}
+                        onClick={() => {
+                          setNotice(null);
+                          addMutation.mutate(product);
+                        }}
+                        aria-label={`إضافة ${name} إلى السلة`}
+                        title={
+                          stock <= 0
+                            ? "المنتج غير متوفر"
+                            : isAdding
+                              ? "جاري الإضافة..."
+                              : "إضافة إلى السلة"
+                        }
+                        className="cursor-pointer flex h-9 w-9 shrink-0 items-center justify-center rounded-xl
+      bg-[#278653] text-white shadow-sm
+      transition-all duration-200
+      hover:bg-[#206B42] hover:shadow-md
+      active:scale-95
+      focus:outline-none focus:ring-2 focus:ring-[#278653]/30
+      disabled:cursor-not-allowed disabled:bg-[#E5EAE5]
+      disabled:text-[#91A398]
+      sm:h-9 sm:w-9"
+                      >
+                        {isAdding ? (
+                          <LoaderCircle size={19} className="animate-spin" />
+                        ) : (
+                          <ShoppingCart size={19} strokeWidth={2} />
+                        )}
+                      </button>
 
-                      <span className="text-xs font-bold">
-                        {isAdding
-                          ? "جاري الإضافة..."
-                          : stock <= 0
-                            ? "غير متوفر"
-                            : "أضف للسلة"}
-                      </span>
-                    </button>
+                      {/* Price */}
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <span className="text-sm font-extrabold text-[#278653] sm:text-base">
+                          {formatPrice(price)}
+                        </span>
+
+                        {hasDiscount && (
+                          <span className="text-[11px] text-[#91A398] line-through sm:text-xs">
+                            {formatPrice(originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </article>
               );
