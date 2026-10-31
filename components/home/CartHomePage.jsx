@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -18,12 +19,12 @@ import {
 import { getProducts } from "@/services/productService";
 import { addToCart } from "@/services/cartService";
 
-const formatPrice = (price) =>
-  new Intl.NumberFormat("en-EG", {
+function formatPrice(price) {
+  return new Intl.NumberFormat("en-EG", {
     style: "currency",
     currency: "EGP",
-    maximumFractionDigits: 2,
-  }).format(Number(price) || 0);
+  }).format(price);
+}
 
 function normalizeProducts(response) {
   if (Array.isArray(response)) return response;
@@ -59,9 +60,6 @@ function getPrice(product) {
 export default function CartHomePage() {
   const queryClient = useQueryClient();
 
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("default");
-  const [availability, setAvailability] = useState("all");
   const [notice, setNotice] = useState(null);
   const [favorites, setFavorites] = useState([]);
 
@@ -70,47 +68,7 @@ export default function CartHomePage() {
     queryFn: getProducts,
   });
 
-  const products = useMemo(() => normalizeProducts(data), [data]);
-
-  const filteredProducts = useMemo(() => {
-    const term = search.trim().toLowerCase();
-
-    const result = products.filter((product) => {
-      const name = String(product.title || product.name || "").toLowerCase();
-
-      const brand = String(product.brand || "").toLowerCase();
-      const inStock = Number(product.stock) > 0;
-
-      const matchesSearch =
-        !term || name.includes(term) || brand.includes(term);
-
-      const matchesAvailability =
-        availability === "all" ||
-        (availability === "available" && inStock) ||
-        (availability === "unavailable" && !inStock);
-
-      return matchesSearch && matchesAvailability;
-    });
-
-    if (sort === "price-low") {
-      result.sort((a, b) => getPrice(a) - getPrice(b));
-    }
-
-    if (sort === "price-high") {
-      result.sort((a, b) => getPrice(b) - getPrice(a));
-    }
-
-    if (sort === "name") {
-      result.sort((a, b) =>
-        String(a.title || a.name || "").localeCompare(
-          String(b.title || b.name || ""),
-          "ar",
-        ),
-      );
-    }
-
-    return result;
-  }, [products, search, sort, availability]);
+  const products = normalizeProducts(data);
 
   const addMutation = useMutation({
     mutationFn: (product) =>
@@ -158,7 +116,6 @@ export default function CartHomePage() {
             className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 bg-white p-3"
           >
             <div className="aspect-[4/5] rounded-xl bg-gray-200" />
-
             <div className="mt-4 h-4 w-3/4 rounded bg-gray-200" />
             <div className="mt-3 h-3 w-1/2 rounded bg-gray-100" />
             <div className="mt-4 h-5 w-2/5 rounded bg-gray-200" />
@@ -168,6 +125,7 @@ export default function CartHomePage() {
     );
   }
 
+  // Error State
   if (isError) {
     return (
       <main
@@ -199,11 +157,14 @@ export default function CartHomePage() {
   return (
     <main dir="rtl" className="min-h-screen bg-[#F3F7F3] text-[#26382D]">
       <div className="mx-auto max-w-[1600px] px-4 py-4 sm:px-6 lg:px-10">
+
         {/* Header */}
         <header className="mb-7">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold sm:text-3xl">Our Products</h1>
+              <h1 className="text-2xl font-bold sm:text-3xl">
+                Our Products
+              </h1>
             </div>
 
             <p className="text-xl font-black tracking-wider text-[#278653] sm:text-2xl">
@@ -212,10 +173,8 @@ export default function CartHomePage() {
           </div>
 
           <div className="mt-4 flex items-center justify-between text-sm text-[#718075]">
-            <p className="text-x1 text-amber-700 font-black tracking-wider">
-              <span className="text-x1 text-[#278653]">
-                {filteredProducts.length}
-              </span>{" "}
+            <p className="font-black tracking-wider text-amber-700">
+              <span className="text-[#278653]">{products.length}</span>{" "}
               Item
             </p>
 
@@ -252,31 +211,19 @@ export default function CartHomePage() {
         )}
 
         {/* Products */}
-        {filteredProducts.length === 0 ? (
+        {products.length === 0 ? (
           <section className="rounded-2xl border border-[#E1E9E1] bg-white px-4 py-16 text-center">
             <Package size={40} className="mx-auto mb-3 text-[#91A398]" />
 
-            <h2 className="font-bold">لا توجد منتجات مطابقة</h2>
+            <h2 className="font-bold">لا توجد منتجات حاليًا</h2>
 
             <p className="mt-2 text-sm text-[#718075]">
-              جرّب تغيير البحث أو الفلاتر.
+              لم يتم العثور على منتجات لعرضها.
             </p>
-
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setSort("default");
-                setAvailability("all");
-              }}
-              className="mt-4 text-sm font-semibold text-[#278653] hover:text-[#206B42]"
-            >
-              إعادة ضبط البحث
-            </button>
           </section>
         ) : (
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5">
-            {filteredProducts.map((product) => {
+            {products.map((product) => {
               const name = product.title || product.name || "منتج";
               const image = getImage(product);
               const price = getPrice(product);
@@ -295,8 +242,9 @@ export default function CartHomePage() {
                   key={product._id}
                   className="group min-w-0 overflow-hidden rounded-2xl border border-[#E1E9E1] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#B5D7BE] hover:shadow-xl hover:shadow-[#26382D]/10"
                 >
-                  {/* Image + floating actions */}
+                  {/* Image */}
                   <div className="relative aspect-square overflow-hidden bg-[#E8F1E9]">
+
                     <Link
                       href={`/products/${product._id}`}
                       aria-label={`عرض ${name}`}
@@ -318,11 +266,14 @@ export default function CartHomePage() {
 
                     {/* Top icons */}
                     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between p-2.5">
+
                       {/* Favorite */}
                       <button
                         type="button"
                         aria-label={
-                          isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"
+                          isFavorite
+                            ? "إزالة من المفضلة"
+                            : "إضافة إلى المفضلة"
                         }
                         aria-pressed={isFavorite}
                         onClick={() => toggleFavorite(product._id)}
@@ -339,6 +290,7 @@ export default function CartHomePage() {
                       </button>
 
                       <div className="flex flex-col gap-2">
+
                         {/* Discount */}
                         {hasDiscount && (
                           <span className="rounded-full bg-[#278653] px-2.5 py-1 text-[10px] font-bold text-white shadow-sm sm:text-xs">
@@ -346,30 +298,32 @@ export default function CartHomePage() {
                           </span>
                         )}
 
-                        {/* Details icon */}
+                        {/* Details icon - Large screens only */}
                         <Link
                           href={`/products/${product._id}`}
                           aria-label={`تفاصيل ${name}`}
-                          className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#26382D] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-[#278653] hover:text-white"
+                          className="pointer-events-auto hidden h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#26382D] shadow-md backdrop-blur-md transition hover:scale-110 hover:bg-[#278653] hover:text-white lg:flex"
                         >
                           <Eye size={18} />
                         </Link>
                       </div>
                     </div>
 
-                    {/* Product name appears on hover */}
+                    {/* Product name on image */}
                     <Link
                       href={`/products/${product._id}`}
-                      className="absolute inset-x-0 bottom-0 z-[5] flex min-h-20 items-end bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10 opacity-100 transition-opacity duration-300 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                      aria-label={`تفاصيل ${name}`}
+                      className="absolute inset-x-0 bottom-0 z-[5] flex min-h-20 items-end bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10 opacity-100 transition-opacity duration-300 lg:opacity-0 lg:group-hover:opacity-100 lg:group-focus-within:opacity-100"
                     >
                       <div className="min-w-0">
+
                         {product.brand && (
                           <p className="mb-1 truncate text-[10px] font-medium text-[#B8E6C5] sm:text-xs">
                             {product.brand}
                           </p>
                         )}
 
-                        <h2 className="line-clamp-2 text-sm font-bold leading-5 text-white sm:text-base">
+                        <h2 className="truncate text-sm font-bold leading-5 text-white sm:text-base">
                           {name}
                         </h2>
                       </div>
@@ -387,16 +341,10 @@ export default function CartHomePage() {
 
                   {/* Product information */}
                   <div className="flex flex-col p-3 sm:p-4">
-                    {/* Name for touch devices and accessibility */}
-                    <Link
-                      href={`/products/${product._id}`}
-                      className="mb-2 line-clamp-2 min-h-10 text-sm font-semibold leading-5 text-[#26382D] transition hover:text-[#278653] sm:hidden"
-                    >
-                      {name}
-                    </Link>
 
                     {/* Rating and stock */}
-                    <div className="mt-3 flex items-center justify-between gap-1 border-t border-[#EDF1ED] pt-3">
+                    <div className="mt-1 flex items-center justify-between gap-1 border-t border-[#EDF1ED] pt-3">
+
                       <span className="flex items-center gap-1 text-xs text-[#718075]">
                         <Star
                           size={14}
@@ -411,14 +359,19 @@ export default function CartHomePage() {
                         }`}
                       >
                         {stock > 0 && <Check size={13} />}
+
                         {stock > 0 ? "In Stock" : "Out of Stock"}
-                        <span className="text-amber-500">{product.stock}</span>
+
+                        <span className="text-amber-500">
+                          {product.stock}
+                        </span>
                       </span>
                     </div>
 
-                    {/* Price */}
+                    {/* Price and Add to Cart */}
                     <div className="mt-3 flex min-w-0 flex-wrap items-center justify-between gap-2">
-                      {/* Icon-only Add to Cart */}
+
+                      {/* Add to Cart */}
                       <button
                         type="button"
                         disabled={stock <= 0 || isAdding}
@@ -434,18 +387,13 @@ export default function CartHomePage() {
                               ? "جاري الإضافة..."
                               : "إضافة إلى السلة"
                         }
-                        className="cursor-pointer flex h-9 w-9 shrink-0 items-center justify-center rounded-xl
-      bg-[#278653] text-white shadow-sm
-      transition-all duration-200
-      hover:bg-[#206B42] hover:shadow-md
-      active:scale-95
-      focus:outline-none focus:ring-2 focus:ring-[#278653]/30
-      disabled:cursor-not-allowed disabled:bg-[#E5EAE5]
-      disabled:text-[#91A398]
-      sm:h-9 sm:w-9"
+                        className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#278653] text-white shadow-sm transition-all duration-200 hover:bg-[#206B42] hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#278653]/30 disabled:cursor-not-allowed disabled:bg-[#E5EAE5] disabled:text-[#91A398]"
                       >
                         {isAdding ? (
-                          <LoaderCircle size={19} className="animate-spin" />
+                          <LoaderCircle
+                            size={19}
+                            className="animate-spin"
+                          />
                         ) : (
                           <ShoppingCart size={19} strokeWidth={2} />
                         )}
